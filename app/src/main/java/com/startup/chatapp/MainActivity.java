@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
         } else {
             return uid2 + uid1;
         }
-        return "Error 101";
+        return "Error 1001";
     }
 
 
