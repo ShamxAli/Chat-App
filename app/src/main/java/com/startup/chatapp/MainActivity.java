@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -21,18 +22,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.startup.chatapp.adapters.ContactAdapter;
+import com.startup.chatapp.chat.ChatActivity;
 import com.startup.chatapp.model.ContactsModel;
 import com.startup.chatapp.model.Person;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ContactAdapter.ItemOnClickListener {
 
     /*Variable Initialization ====== */
     TextView textView;
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*Show number of contacts*/
         textView.setText("Number of contacts " + arrayList.size());
-//        FirebaseDatabase.getInstance().getReference("Users").keepSynced(true);
+        FirebaseDatabase.getInstance().getReference("Users").keepSynced(true);
 
 
     }
@@ -142,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (number.substring(0, 1).contains("3")) {
                 number = "+92" + number;
             }
-            arrayList.add(new ContactsModel(name, number));
+            arrayList.add(new ContactsModel(name, number,""));
         }
 
 
@@ -171,10 +174,15 @@ public class MainActivity extends AppCompatActivity {
                     // comparing phone numbers
                     for (ContactsModel contactsModel : arrayList) {
                         if (person.getPhoneNumber().equals(contactsModel.getContactNumber())) {
-                            contactList.add(new ContactsModel(contactsModel.getContactName(), contactsModel.getContactNumber()));
+                            contactList.add(new ContactsModel(contactsModel.getContactName(), contactsModel.getContactNumber(),person.getUid()));
                         }
                     }
                 }
+
+                LinkedHashSet<ContactsModel> hashSet = new LinkedHashSet<>(contactList);
+                contactList.clear();
+                contactList = new ArrayList<>(hashSet);
+
                 bakeRecyclerView(contactList);
             }
 
@@ -238,9 +246,58 @@ public class MainActivity extends AppCompatActivity {
     /*Bake RecyclerView==============================================================*/
     private void bakeRecyclerView(ArrayList<ContactsModel> contactsModels) {
 
-        contactAdapter = new ContactAdapter(contactsModels, context);
+        contactAdapter = new ContactAdapter(contactsModels, context,this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(contactAdapter);
     }
 
+
+    String p_user, c_user;
+
+    public String getChatUid(int postion) {
+        c_user = FirebaseAuth.getInstance().getUid();
+        p_user = contactList.get(postion).getUid();
+        return setOnetoOneChat(c_user, p_user);
+    }
+
+    public String setOnetoOneChat(String uid1, String uid2) {
+        char f1;
+        char f2;
+        int cf1, cf2;
+        int length1 = uid1.length();
+        int length2 = uid2.length();
+        if (length1 < length2) {
+            return uid1 + uid2;
+        } else if (length1 == length2) {
+            for (int i = 0; i < uid1.length(); i++) {
+                f1 = uid1.charAt(i);
+                f2 = uid2.charAt(i);
+                cf1 = (int) f1;
+                cf2 = (int) f2;
+                if (cf1 < cf2) {
+                    return uid1 + uid2;
+                } else if (cf1 > cf2) {
+                    return uid2 + uid1;
+                } else {
+
+                }
+            }
+        } else {
+            return uid2 + uid1;
+        }
+        return "Error";
+    }
+
+
+    @Override
+    public void onItemClick(int position) {
+        String msgUid=getChatUid(position);
+        if(msgUid.equals("Error")){
+            Toast.makeText(context, "You connot msg yourself", Toast.LENGTH_SHORT).show();
+        }else {
+            Intent intent=new Intent(this, ChatActivity.class);
+            intent.putExtra("msgUid",msgUid);
+            startActivity(intent);
+        }
+    }
 }

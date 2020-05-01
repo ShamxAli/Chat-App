@@ -5,6 +5,12 @@
     <color name="colorAccent">#FFFFFF</color>
     <color name="white">#ffffff</color>
     <color name="login_background">#D514192C</color>
-
+    <color name="colorBlack">#000</color>
+    <color name="colorWhite">#fff</color>
+    <color name="colorLightGrey">#E0E0E0</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
 
 </resources>

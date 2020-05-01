@@ -7,13 +7,29 @@ public class ContactsModel {
 
     private String contactName;
     private String contactNumber;
+    private String uid;
 
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     /*Constructor*/
-   public ContactsModel(String name, String number) {
+   public ContactsModel(String name, String number, String uid) {
         contactName = name;
         contactNumber = number;
-        Integer sklcsndk;
+       this.uid = uid;
     }
 
 
@@ -24,13 +40,12 @@ public class ContactsModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ContactsModel that = (ContactsModel) o;
-        return Objects.equals(contactName, that.contactName) &&
-                Objects.equals(contactNumber, that.contactNumber);
+        return Objects.equals(contactNumber, that.contactNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(contactName, contactNumber);
+        return Objects.hash( contactNumber);
     }
 
     /*Getters*/
