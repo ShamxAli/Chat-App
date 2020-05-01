@@ -1,4 +1,4 @@
-package com.startup.chatapp;
+package com.startup.chatapp.offlinefirebase;
 
 import android.app.Application;
 

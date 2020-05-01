@@ -1,4 +1,4 @@
-package com.startup.chatapp;
+package com.startup.chatapp.model;
 
 import java.util.Objects;
 
@@ -10,7 +10,7 @@ public class ContactsModel {
 
 
     /*Constructor*/
-    ContactsModel(String name, String number) {
+   public ContactsModel(String name, String number) {
         contactName = name;
         contactNumber = number;
         Integer sklcsndk;
@@ -34,11 +34,11 @@ public class ContactsModel {
     }
 
     /*Getters*/
-    String getContactName() {
+    public String getContactName() {
         return contactName;
     }
 
-    String getContactNumber() {
+    public String getContactNumber() {
         return contactNumber;
     }
 

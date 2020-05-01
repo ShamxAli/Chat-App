@@ -1,4 +1,4 @@
-package com.startup.chatapp;
+package com.startup.chatapp.splash;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.startup.chatapp.MainActivity;
+import com.startup.chatapp.R;
 import com.startup.chatapp.phoneauthentication.PhoneLoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -24,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 }
                 else {
-                    startActivity(new Intent(SplashActivity.this,MainActivity.class));
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     finish();
                 }
             }

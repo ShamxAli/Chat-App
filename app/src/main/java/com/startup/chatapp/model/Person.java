@@ -1,4 +1,4 @@
-package com.startup.chatapp;
+package com.startup.chatapp.model;
 
 public class Person {
 

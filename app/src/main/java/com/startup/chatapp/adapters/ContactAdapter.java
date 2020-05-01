@@ -1,4 +1,4 @@
-package com.startup.chatapp;
+package com.startup.chatapp.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,6 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.startup.chatapp.R;
+import com.startup.chatapp.model.ContactsModel;
+
 import java.util.ArrayList;
 
 
@@ -20,7 +23,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
     private ArrayList<ContactsModel> data;
     private Context context;
 
-    ContactAdapter(ArrayList<ContactsModel> data, Context context) {
+    public ContactAdapter(ArrayList<ContactsModel> data, Context context) {
         this.data = data;
         this.context = context;
     }
@@ -76,7 +79,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
     }
 
     /*Filter*/
-    void filter(ArrayList<ContactsModel> newList) {
+    public void filter(ArrayList<ContactsModel> newList) {
         data = newList;
         notifyDataSetChanged();
     }

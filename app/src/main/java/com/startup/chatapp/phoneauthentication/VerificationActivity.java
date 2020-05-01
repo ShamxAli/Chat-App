@@ -24,7 +24,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.startup.chatapp.MainActivity;
-import com.startup.chatapp.Person;
+import com.startup.chatapp.model.Person;
 import com.startup.chatapp.R;
 import com.tuyenmonkey.mkloader.MKLoader;
 
@@ -126,7 +126,7 @@ public class VerificationActivity extends AppCompatActivity {
 
     }
 
-
+    /*Verify and store data...*/
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -136,10 +136,10 @@ public class VerificationActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
                             Person person = new Person(mAuth.getUid(), number);
-                            Log.d("lol", "onComplete: " + person.getUid()+" "+person.getPhoneNumber());
+                            Log.d("lol", "onComplete: " + person.getUid() + " " + person.getPhoneNumber());
                             mRef.child(person.getUid()).setValue(person);
 
-                            Intent intent=new Intent(VerificationActivity.this, MainActivity.class);
+                            Intent intent = new Intent(VerificationActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                             // ...
