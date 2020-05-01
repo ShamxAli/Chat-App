@@ -297,6 +297,8 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
         }else {
             Intent intent=new Intent(this, ChatActivity.class);
             intent.putExtra("msgUid",msgUid);
+            intent.putExtra("otheruid",p_user);
+            intent.putExtra("number",contactList.get(position).getContactNumber());
             startActivity(intent);
         }
     }

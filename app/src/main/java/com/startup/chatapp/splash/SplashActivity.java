@@ -9,6 +9,7 @@ import android.os.Handler;
 import com.google.firebase.auth.FirebaseAuth;
 import com.startup.chatapp.MainActivity;
 import com.startup.chatapp.R;
+import com.startup.chatapp.RecentChats;
 import com.startup.chatapp.phoneauthentication.PhoneLoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -26,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 }
                 else {
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    startActivity(new Intent(SplashActivity.this, RecentChats.class));
                     finish();
                 }
             }
