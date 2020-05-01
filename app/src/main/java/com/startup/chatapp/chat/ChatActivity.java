@@ -39,6 +39,15 @@ public class ChatActivity extends AppCompatActivity {
     String otheruid,myuid;
     IndChatList indChatList;
     String number;
+    boolean flag;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkIfAlreadyExits();
+        flag=false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,11 +90,58 @@ public class ChatActivity extends AppCompatActivity {
             Log.d("lolll", "sendMessage: "+messageModelClass.getUid()+" "+messageModelClass.getTimestamp()+" "+messageModelClass.getMsgId()+messageModelClass.getTimestamp()+" "+push);
             FirebaseDatabase.getInstance().getReference().child("ChatSystem").child(msgUid).child(push).setValue(messageModelClass);
             text.setText("");
+            makeChatBox(msgtext);
+        }
+    }
 
+    IndChatList indChatListAlreadyExists;
+    List<IndChatList> indChatListList=new ArrayList<>();
+    public void checkIfAlreadyExits(){
+        FirebaseDatabase.getInstance().getReference().child("IndChatList").child(FirebaseAuth.getInstance().getUid()).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                indChatListAlreadyExists = dataSnapshot.getValue(IndChatList.class);
+                indChatListList.add(indChatListAlreadyExists);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void makeChatBox(String msgtext) {
+        boolean flag = false;
+        String push1 = null,push2=null;
+        for (int i = 0; i < indChatListList.size(); i++) {
+           if(indChatListList.get(i).getOtheruid().equals(otheruid)){
+               push1=indChatListList.get(i).getMypushid();
+               push2=indChatListList.get(i).getOtherpushid();
+               flag=true;
+           }
+        }
+        if (flag == false) {
             // create individual list
             indChatList.setMsguid(msgUid);
             indChatList.setMypushid(mypush);
             indChatList.setOtherpushid(otherpush);
+            indChatList.setOtheruid(otheruid);
             indChatList.setTimestamp(System.currentTimeMillis()/1000);
             indChatList.setLastmsg(msgtext);
             indChatList.setPhone(number);
@@ -96,8 +152,25 @@ public class ChatActivity extends AppCompatActivity {
             indChatList.setMypushid(otherpush);
             indChatList.setOtherpushid(mypush);
             indChatList.setPhone(mynumber);
+            indChatList.setOtheruid(uid);
+            FirebaseDatabase.getInstance().getReference().child("IndChatList").child(otheruid).child(otherpush).setValue(indChatList);
 
-            FirebaseDatabase.getInstance().getReference().child("IndChatList").child(otheruid).child(mypush).setValue(indChatList);
+        } else {
+            indChatList.setMsguid(msgUid);
+            indChatList.setMypushid(push1);
+            indChatList.setOtherpushid(push2);
+            indChatList.setOtheruid(otheruid);
+            indChatList.setTimestamp(System.currentTimeMillis()/1000);
+            indChatList.setLastmsg(msgtext);
+            indChatList.setPhone(number);
+            FirebaseDatabase.getInstance().getReference().child("IndChatList").child(uid).child(push1).setValue(indChatList);
+
+            indChatList.setMsguid(otheruid);
+            indChatList.setMypushid(push2);
+            indChatList.setOtherpushid(push1);
+            indChatList.setPhone(mynumber);
+            indChatList.setOtheruid(uid);
+            FirebaseDatabase.getInstance().getReference().child("IndChatList").child(otheruid).child(push2).setValue(indChatList);
 
         }
     }

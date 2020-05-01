@@ -9,6 +9,7 @@ public class IndChatList {
     private long timestamp;
     private String phone;
 
+
     public String getPhone() {
         return phone;
     }
