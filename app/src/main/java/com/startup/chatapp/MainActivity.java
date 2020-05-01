@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*Show number of contacts*/
         textView.setText("Number of contacts " + arrayList.size());
+//        FirebaseDatabase.getInstance().getReference("Users").keepSynced(true);
 
 
     }
