@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.startup.chatapp.R;
 import com.startup.chatapp.model.ContactsModel;
+import com.startup.chatapp.model.IndChatList;
 
 import java.util.ArrayList;
 

@@ -7,10 +7,10 @@
     tools:context=".RecentChats">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_recent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerview_recent"
-        />
+        tools:listitem="@layout/recycler_view_item" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

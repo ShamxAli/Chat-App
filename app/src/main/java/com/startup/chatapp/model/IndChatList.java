@@ -1,6 +1,8 @@
 package com.startup.chatapp.model;
 
-public class IndChatList {
+import java.io.Serializable;
+
+public class IndChatList implements Serializable {
     private String lastmsg;
     private String mypushid;
     private String otherpushid;
@@ -8,7 +10,26 @@ public class IndChatList {
     private String msguid;
     private long timestamp;
     private String phone;
+    private String name;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public IndChatList(String lastmsg, String mypushid, String otherpushid, String otheruid, String msguid, long timestamp, String phone, String name) {
+        this.lastmsg = lastmsg;
+        this.mypushid = mypushid;
+        this.otherpushid = otherpushid;
+        this.otheruid = otheruid;
+        this.msguid = msguid;
+        this.timestamp = timestamp;
+        this.phone = phone;
+        this.name = name;
+    }
 
     public String getPhone() {
         return phone;

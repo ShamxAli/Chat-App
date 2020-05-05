@@ -75,37 +75,8 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
     /*Permission Code = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-    private void isAllowed() {
-
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_CONTACTS)
-                + ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE)
-                != PackageManager.PERMISSION_GRANTED) {
-            askForPermission();
-        }
-    }
-
-    /*Ask if not allowed*/
-    private void askForPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE}, 1);
-
-        }
-    }
-
-    /*Permission Results*/
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
 
-        if (grantResults.length > 0 & grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Permission not granted", Toast.LENGTH_SHORT).show();
-        }
-
-    }
 
 
 
@@ -115,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void readContacts() {
 
-        isAllowed();
 
         Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);

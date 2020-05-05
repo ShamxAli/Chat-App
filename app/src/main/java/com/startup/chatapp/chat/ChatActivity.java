@@ -156,6 +156,7 @@ public class ChatActivity extends AppCompatActivity {
             FirebaseDatabase.getInstance().getReference().child("IndChatList").child(otheruid).child(otherpush).setValue(indChatList);
 
         } else {
+
             indChatList.setMsguid(msgUid);
             indChatList.setMypushid(push1);
             indChatList.setOtherpushid(push2);
@@ -164,7 +165,6 @@ public class ChatActivity extends AppCompatActivity {
             indChatList.setLastmsg(msgtext);
             indChatList.setPhone(number);
             FirebaseDatabase.getInstance().getReference().child("IndChatList").child(uid).child(push1).setValue(indChatList);
-
             indChatList.setMsguid(otheruid);
             indChatList.setMypushid(push2);
             indChatList.setOtherpushid(push1);
