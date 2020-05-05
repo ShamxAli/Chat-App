@@ -20,15 +20,16 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.startup.chatapp.adapters.ContactAdapter;
 import com.startup.chatapp.adapters.RecentAdapter;
 import com.startup.chatapp.chat.ChatActivity;
 import com.startup.chatapp.model.ContactsModel;
 import com.startup.chatapp.model.IndChatList;
+import com.startup.chatapp.model.Person;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -39,6 +40,7 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     RecentAdapter recentAdapter;
     Context context;
     ArrayList<ContactsModel> arrayList = new ArrayList<>();
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +126,7 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
                 concat num with +92
             else if index[0] == "3"
                 concat num with +92
+
         */
             if (number.substring(0, 1).contains("0")) {
                 number = number.substring(1);
@@ -131,7 +134,11 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
             } else if (number.substring(0, 1).contains("3")) {
                 number = "+92" + number;
             }
-            arrayList.add(new ContactsModel(name, number,""));
+            if(number.equals(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())){
+
+            }else {
+                arrayList.add(new ContactsModel(name, number, ""));
+            }
         }
 
 
@@ -156,12 +163,15 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    IndChatList indChatList=child.getValue(IndChatList.class);
-                    // comparing phone numbers
-                    for (ContactsModel contactsModel : arrayList) {
-                        indChatList.setName(contactsModel.getContactName());
-                        if (indChatList.getPhone().equals(contactsModel.getContactNumber())) {
-                            indChatLists.add(indChatList);
+                    for(DataSnapshot grandchild: child.getChildren()) {
+                        IndChatList indChatList = grandchild.getValue(IndChatList.class);
+                        Log.d("MyError", "onDataChange: " + indChatList.getPhone());
+                        // comparing phone numbers
+                        for (ContactsModel contactsModel : arrayList) {
+                            if (indChatList.getPhone().equals(contactsModel.getContactNumber())) {
+                                indChatList.setName(contactsModel.getContactName());
+                                indChatLists.add(indChatList);
+                            }
                         }
                     }
                 }
@@ -181,11 +191,13 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     }
 
 
+
     @Override
     public void ItemClick(int position) {
         IndChatList indChatList=indChatLists.get(position);
         Intent intent=new Intent(RecentChats.this, ChatActivity.class);
         intent.putExtra("obj",indChatList);
+        intent.putExtra("opt","RecentActivity");
         startActivity(intent);
     }
 }

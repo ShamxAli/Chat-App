@@ -36,10 +36,11 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     MessageAdapter messageAdapter;
     List<MessageModelClass> msgList=new ArrayList<>();
-    String otheruid,myuid;
+    String otheruid;
     IndChatList indChatList;
     String number;
     boolean flag;
+    IndChatList intentObj;
 
     @Override
     protected void onStart() {
@@ -47,6 +48,7 @@ public class ChatActivity extends AppCompatActivity {
         checkIfAlreadyExits();
         flag=false;
     }
+    String opt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +58,17 @@ public class ChatActivity extends AppCompatActivity {
         messageModelClass=new MessageModelClass();
         indChatList=new IndChatList();
         uid=FirebaseAuth.getInstance().getUid();
-        msgUid=getIntent().getStringExtra("msgUid");
-        otheruid=getIntent().getStringExtra("otheruid");
-        myuid=getIntent().getStringExtra("myuid");
-        number=getIntent().getStringExtra("number");
+        opt=getIntent().getStringExtra("opt");
+        if(opt.equals("ContactActivity")) {
+            msgUid = getIntent().getStringExtra("msgUid");
+            otheruid = getIntent().getStringExtra("otheruid");
+            number = getIntent().getStringExtra("number");
+        }else{
+            intentObj= (IndChatList) getIntent().getSerializableExtra("obj");
+            msgUid=intentObj.getMsguid();
+            otheruid=intentObj.getOtheruid();
+            number=intentObj.getPhone();
+        }
         mypush=FirebaseDatabase.getInstance().getReference().push().getKey();
         otherpush=FirebaseDatabase.getInstance().getReference().push().getKey();
         recyclerView=findViewById(R.id.msg_recyclerView);
@@ -138,17 +147,18 @@ public class ChatActivity extends AppCompatActivity {
         }
         if (flag == false) {
             // create individual list
-            indChatList.setMsguid(msgUid);
+            Log.d("LOLLL", "makeChatBox: "+msgUid);
+
             indChatList.setMypushid(mypush);
             indChatList.setOtherpushid(otherpush);
             indChatList.setOtheruid(otheruid);
             indChatList.setTimestamp(System.currentTimeMillis()/1000);
             indChatList.setLastmsg(msgtext);
             indChatList.setPhone(number);
-
+            indChatList.setMsguid(msgUid);
             FirebaseDatabase.getInstance().getReference().child("IndChatList").child(uid).child(mypush).setValue(indChatList);
 
-            indChatList.setMsguid(otheruid);
+            indChatList.setMsguid(msgUid);
             indChatList.setMypushid(otherpush);
             indChatList.setOtherpushid(mypush);
             indChatList.setPhone(mynumber);

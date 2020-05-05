@@ -269,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
             intent.putExtra("msgUid",msgUid);
             intent.putExtra("otheruid",p_user);
             intent.putExtra("number",contactList.get(position).getContactNumber());
+            intent.putExtra("opt","ContactActivity");
             startActivity(intent);
         }
     }

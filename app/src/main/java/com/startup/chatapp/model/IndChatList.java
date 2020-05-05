@@ -100,6 +100,7 @@ public class IndChatList implements Serializable {
         this.timestamp = timestamp;
     }
 
+
     public IndChatList(String lastmsg, String mypushid, String otherpushid, String otheruid, String msguid, long timestamp) {
         this.lastmsg = lastmsg;
         this.mypushid = mypushid;
