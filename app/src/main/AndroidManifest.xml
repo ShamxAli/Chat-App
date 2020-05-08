@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
-        android:name=".offlinefirebase.SimpleClass"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -14,7 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".RecentChats"></activity>
-        <activity android:name=".chat.ChatActivity" android:parentActivityName=".RecentChats" />
+        <activity
+            android:name=".chat.ChatActivity"
+            android:parentActivityName=".RecentChats" />
         <activity android:name=".MainActivity" />
         <activity android:name=".splash.SplashActivity">
             <intent-filter>

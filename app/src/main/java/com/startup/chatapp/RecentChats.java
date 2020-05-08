@@ -39,7 +39,11 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     RecyclerView recyclerView;
     RecentAdapter recentAdapter;
     Context context;
+    boolean chkRunning;
+
     ArrayList<ContactsModel> arrayList = new ArrayList<>();
+    ArrayList<RecentChatsModel> recentChatsArrayList = new ArrayList<>();
+    ValueEventListener mListener;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -48,9 +52,20 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
         setContentView(R.layout.activity_recent_chats);
         context = this;
         initViews();
+        Log.d("TAGTAG", "onCreate: called");
+        chkRunning = true;
 
         // Read contacts
         readContacts();
+
+        // Observing chats with LISTENER...
+
+        observingRecentChats();
+
+
+        //----------------------------------------------------------------------------------
+        // REGISTER LISTENER
+        FirebaseDatabase.getInstance().getReference("RecentChatsModel").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(mListener);
 
 
         LinkedHashSet<RecentChatsModel> hashSet = new LinkedHashSet<>(recentChatsArrayList);
@@ -60,7 +75,80 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     }
 
 
-    /*Read Contacts ======================================================================================================*/
+    private void observingRecentChats() {
+        // VALUE EVENT LISTENER----------------------------------------------------------------------------------
+        mListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("TAGTAG", "onDataChange: added called");
+                // Clearing the list..
+                recentChatsArrayList.clear();
+                // ...
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                    RecentChatsModel recentChatsModel = child.getValue(RecentChatsModel.class);
+                    Log.d("MyError", "onDataChange: " + recentChatsModel.getPhone());
+
+                    // comparing phone numbers
+
+                    for (ContactsModel contactsModel : arrayList) {
+                        if (recentChatsModel.getPhone().equals(contactsModel.getContactNumber())) {
+                            recentChatsModel.setName(contactsModel.getContactName());
+                            recentChatsArrayList.add(recentChatsModel);
+                        }
+                    }
+                    recentAdapter.notifyDataSetChanged();
+                }
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+    }
+
+
+    // UNREGISTER LISTENER
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseDatabase.getInstance().getReference("RecentChatsModel").removeEventListener(mListener);
+    }
+
+
+    /* Single Item click listener... GO TO CHAT ACTIVITY*/
+    @Override
+    public void ItemClick(int position) {
+        RecentChatsModel recentChatsModel = recentChatsArrayList.get(position);
+        Intent intent = new Intent(RecentChats.this, ChatActivity.class);
+        intent.putExtra("object", recentChatsModel);
+        intent.putExtra("key", "RecentActivity");
+        startActivity(intent);
+    }
+
+
+    // initViews
+    private void initViews() {
+        fab = findViewById(R.id.fab);
+        recyclerView = findViewById(R.id.recyclerview_recent);
+    }
+
+    // Fab icon click...
+    public void fabClick(View view) {
+        Intent intent = new Intent(RecentChats.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    // bake recyclerView
+    private void bakeRecyclerView(ArrayList<RecentChatsModel> recentChatsModels) {
+        recentAdapter = new RecentAdapter(context, recentChatsModels, this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(recentAdapter);
+    }
+
+    /*Read Contacts =======================*/
 
     public void readContacts() {
 
@@ -111,12 +199,12 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
 
         Log.d("duplicate", "readContacts: " + arrayList.size());
 
-        getAllUsersFromFirebase();
     }
-    /*==============================================================================================================*/
+    // *****
 
 
-    /*Permissions ================================================================================================*/
+    /*Permissions ============================*/
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void isAllowed() {
         if (ContextCompat.checkSelfPermission(RecentChats.this, Manifest.permission.READ_CONTACTS)
@@ -126,7 +214,7 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
 
     }
 
-    /*Permission Results*/
+    // Permission Results
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -138,77 +226,7 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
         }
 
     }
-
-    /* ============================================================================================================*/
-
-
-    /*Recent chat logic*/
-    ArrayList<RecentChatsModel> recentChatsArrayList = new ArrayList<>();
-
-    public void getAllUsersFromFirebase() {
-
-        FirebaseDatabase.getInstance().getReference("RecentChatsModel").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("TAGTAG...", "onDataChange: added called");
-                // Clearing the list..
-                recentChatsArrayList.clear();
-                // ...
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    for (DataSnapshot grandchild : child.getChildren()) {
-                        RecentChatsModel recentChatsModel = grandchild.getValue(RecentChatsModel.class);
-                        Log.d("MyError", "onDataChange: " + recentChatsModel.getPhone());
-
-                        // comparing phone numbers
-
-                        for (ContactsModel contactsModel : arrayList) {
-                            if (recentChatsModel.getPhone().equals(contactsModel.getContactNumber())) {
-                                recentChatsModel.setName(contactsModel.getContactName());
-                                recentChatsArrayList.add(recentChatsModel);
-                            }
-                        }
-                        recentAdapter.notifyDataSetChanged();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
-    /* Single Item click listener...*/
-    @Override
-    public void ItemClick(int position) {
-        RecentChatsModel recentChatsModel = recentChatsArrayList.get(position);
-        Intent intent = new Intent(RecentChats.this, ChatActivity.class);
-        intent.putExtra("object", recentChatsModel);
-        intent.putExtra("key", "RecentActivity");
-        startActivity(intent);
-    }
-
-
-    // initViews
-    private void initViews() {
-        fab = findViewById(R.id.fab);
-        recyclerView = findViewById(R.id.recyclerview_recent);
-    }
-
-    // Fab icon click...
-    public void fabClick(View view) {
-        Intent intent = new Intent(RecentChats.this, MainActivity.class);
-        startActivity(intent);
-    }
-
-    // bake recyclerView
-    private void bakeRecyclerView(ArrayList<RecentChatsModel> recentChatsModels) {
-        recentAdapter = new RecentAdapter(context, recentChatsModels, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(recentAdapter);
-    }
+    // *****
 
 
 }
