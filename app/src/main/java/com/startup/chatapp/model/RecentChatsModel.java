@@ -7,8 +7,10 @@ public class RecentChatsModel implements Serializable {
     private long timestamp;
     private String phone;
     private String name;
-    private String user2_uid;
+    //
     private String combined_uid;
+    private String user1_uid;
+    private String user2_uid;
     private String user1_pushid;
     private String user2_pushid;
 
@@ -118,4 +120,11 @@ public class RecentChatsModel implements Serializable {
     }
 
 
+    public String getUser1_uid() {
+        return user1_uid;
+    }
+
+    public void setUser1_uid(String user1_uid) {
+        this.user1_uid = user1_uid;
+    }
 }

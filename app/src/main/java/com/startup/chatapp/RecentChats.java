@@ -33,6 +33,8 @@ import com.startup.chatapp.model.RecentChatsModel;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
+
+
 public class RecentChats extends AppCompatActivity implements RecentAdapter.OnItemClick {
     FloatingActionButton fab;
     RecyclerView recyclerView;
@@ -187,8 +189,8 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     public void ItemClick(int position) {
         RecentChatsModel recentChatsModel = recentChatsModels.get(position);
         Intent intent=new Intent(RecentChats.this, ChatActivity.class);
-        intent.putExtra("obj", recentChatsModel);
-        intent.putExtra("opt","RecentActivity");
+        intent.putExtra("object", recentChatsModel);
+        intent.putExtra("key","RecentActivity");
         startActivity(intent);
     }
 }

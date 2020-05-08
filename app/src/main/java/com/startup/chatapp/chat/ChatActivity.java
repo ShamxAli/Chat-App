@@ -3,14 +3,13 @@ package com.startup.chatapp.chat;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,164 +24,102 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private String msgUid;
+    // Widgets
     EditText text;
-    MessageModelClass messageModelClass;
-    String push;
-    String uid;
+    // Recycler View
     RecyclerView recyclerView;
     MessageAdapter messageAdapter;
-    List<MessageModelClass> msgList=new ArrayList<>();
-    String otheruid;
-    RecentChatsModel recentChatsModel;
-    String number;
+    // Global variables
+    String user1_number;
+    String user2_number;
     boolean flag;
+    String comingFrom;
+    // to store...
+    private String msgUid;
+    String user2_uid;
+    String push;
+    String user1_uid;
+
+    String user1_pushid, user2_pushid;
+
+    // arraylist
+    List<MessageModelClass> msgList = new ArrayList<>();
+
+    // models
+    MessageModelClass messageModelClass;
+    RecentChatsModel recentChatsModel;
+    // coming from recentchats
     RecentChatsModel intentObj;
 
+    // onStart()...
     @Override
     protected void onStart() {
         super.onStart();
-        checkIfAlreadyExits();
-        flag=false;
+        checkIfRecentChatAlreadyExist();
+        flag = false;
     }
-    String opt;
 
+
+    // onCreate...
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        text=findViewById(R.id.text_send);
-        messageModelClass=new MessageModelClass();
-        recentChatsModel =new RecentChatsModel();
-        uid=FirebaseAuth.getInstance().getUid();
-        opt=getIntent().getStringExtra("opt");
-        if(opt.equals("ContactActivity")) {
+        initViews();
+
+        // if coming from Contacts activity
+        user1_uid = FirebaseAuth.getInstance().getUid();
+        comingFrom = getIntent().getStringExtra("key");
+        if (comingFrom.equals("ContactActivity")) {
             msgUid = getIntent().getStringExtra("msgUid");
-            otheruid = getIntent().getStringExtra("otheruid");
-            number = getIntent().getStringExtra("number");
-        }else{
-            intentObj= (RecentChatsModel) getIntent().getSerializableExtra("obj");
-            msgUid=intentObj.getCombined_uid();
-            otheruid=intentObj.getUser2_uid();
-            number=intentObj.getPhone();
+            user2_uid = getIntent().getStringExtra("user2_uid");
+            user2_number = getIntent().getStringExtra("user2_number");
         }
-        mypush=FirebaseDatabase.getInstance().getReference().push().getKey();
-        otherpush=FirebaseDatabase.getInstance().getReference().push().getKey();
-        recyclerView=findViewById(R.id.msg_recyclerView);
-        recyclerView.setHasFixedSize(true);
-        final LinearLayoutManager manager = new LinearLayoutManager(ChatActivity.this);
-        recyclerView.setLayoutManager(manager);
+
+        // if coming from recent chats
+        else {
+            intentObj = (RecentChatsModel) getIntent().getSerializableExtra("object");
+            msgUid = intentObj.getCombined_uid();
+            user2_uid = intentObj.getUser2_uid();
+            user2_number = intentObj.getPhone();
+        }
+
+
+        user1_pushid = FirebaseDatabase.getInstance().getReference().push().getKey();
+        user2_pushid = FirebaseDatabase.getInstance().getReference().push().getKey();
+
+
+        // recyclerView
         messageAdapter = new MessageAdapter(this, msgList);
         recyclerView.setAdapter(messageAdapter);
-        getNumberFromFirebase();
+        //
+        user1_number = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
         getLiveMessagesFromFirebaseDatabase();
     }
 
 
-    String mypush,otherpush;
-
     public void sendMessage(View view) {
-        String msgtext=text.getText().toString();
-        if (msgtext.equals("")){
-
-        }else{
-            //msg sending code
-            push= FirebaseDatabase.getInstance().getReference().push().getKey();
-            Log.d("lolll", "sendMessage: "+push);
-            messageModelClass.setMsg(msgtext);
-            messageModelClass.setTimestamp(System.currentTimeMillis()/1000);
-            messageModelClass.setMsgId(push);
-            messageModelClass.setUid(uid);
-            Log.d("lolll", "sendMessage: "+messageModelClass.getUid()+" "+messageModelClass.getTimestamp()+" "+messageModelClass.getMsgId()+messageModelClass.getTimestamp()+" "+push);
-            FirebaseDatabase.getInstance().getReference().child("ChatSystem").child(msgUid).child(push).setValue(messageModelClass);
-            text.setText("");
-            makeChatBox(msgtext);
-        }
-    }
-
-    RecentChatsModel recentChatsModelAlreadyExists;
-    List<RecentChatsModel> recentList =new ArrayList<>();
-    public void checkIfAlreadyExits(){
-        FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(FirebaseAuth.getInstance().getUid()).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                recentChatsModelAlreadyExists = dataSnapshot.getValue(RecentChatsModel.class);
-                recentList.add(recentChatsModelAlreadyExists);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void makeChatBox(String msgtext) {
-        boolean flag = false;
-        String push1 = null,push2=null;
-        for (int i = 0; i < recentList.size(); i++) {
-           if(recentList.get(i).getUser2_uid().equals(otheruid)){
-               push1= recentList.get(i).getUser1_pushid();
-               push2= recentList.get(i).getUser2_pushid();
-               flag=true;
-           }
-        }
-        if (flag == false) {
-            // create individual list
-            Log.d("LOLLL", "makeChatBox: "+msgUid);
-
-            recentChatsModel.setUser1_pushid(mypush);
-            recentChatsModel.setUser2_pushid(otherpush);
-            recentChatsModel.setUser2_uid(otheruid);
-            recentChatsModel.setTimestamp(System.currentTimeMillis()/1000);
-            recentChatsModel.setLastMsg(msgtext);
-            recentChatsModel.setPhone(number);
-            recentChatsModel.setCombined_uid(msgUid);
-            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(uid).child(mypush).setValue(recentChatsModel);
-
-            recentChatsModel.setCombined_uid(msgUid);
-            recentChatsModel.setUser1_pushid(otherpush);
-            recentChatsModel.setUser2_pushid(mypush);
-            recentChatsModel.setPhone(mynumber);
-            recentChatsModel.setUser2_uid(uid);
-            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(otheruid).child(otherpush).setValue(recentChatsModel);
+        String msgtext = text.getText().toString();
+        if (msgtext.equals("")) {
 
         } else {
+            //msg sending code
+            // push id under each combined uid(will)
+            push = FirebaseDatabase.getInstance().getReference().push().getKey();
 
-            recentChatsModel.setCombined_uid(msgUid);
-            recentChatsModel.setUser1_pushid(push1);
-            recentChatsModel.setUser2_pushid(push2);
-            recentChatsModel.setUser2_uid(otheruid);
-            recentChatsModel.setTimestamp(System.currentTimeMillis()/1000);
-            recentChatsModel.setLastMsg(msgtext);
-            recentChatsModel.setPhone(number);
-            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(uid).child(push1).setValue(recentChatsModel);
-            recentChatsModel.setCombined_uid(otheruid);
-            recentChatsModel.setUser1_pushid(push2);
-            recentChatsModel.setUser2_pushid(push1);
-            recentChatsModel.setPhone(mynumber);
-            recentChatsModel.setUser2_uid(uid);
-            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(otheruid).child(push2).setValue(recentChatsModel);
-
+            messageModelClass.setMsg(msgtext);
+            messageModelClass.setTimestamp(System.currentTimeMillis() / 1000);
+            messageModelClass.setMsgId(push);
+            messageModelClass.setUid(user1_uid);
+            FirebaseDatabase.getInstance().getReference().child("ChatSystem").child(msgUid).child(push).setValue(messageModelClass);
+            text.setText("");
+            makeRecentChats(msgtext);
         }
     }
 
-    public void getLiveMessagesFromFirebaseDatabase(){
+
+    // Getting chat messages from firebase
+    public void getLiveMessagesFromFirebaseDatabase() {
         FirebaseDatabase.getInstance().getReference().child("ChatSystem").child(msgUid).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -219,11 +156,122 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    String mynumber;
-    public void getNumberFromFirebase(){
-        FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
-        mynumber=user.getPhoneNumber();
+
+    // InitViews...
+    private void initViews() {
+        text = findViewById(R.id.text_send);
+        recyclerView = findViewById(R.id.msg_recyclerView);
+        recyclerView.setHasFixedSize(true);
+        messageModelClass = new MessageModelClass();
+        recentChatsModel = new RecentChatsModel();
     }
+
+
+
+
+    /*Recent Chats Integeration ========================================================================================================*/
+
+    RecentChatsModel recentChatsModelTemp;
+    List<RecentChatsModel> recentList = new ArrayList<>();
+
+
+    // Getting user1 recent chats and compare for updating purpose (below...)
+    public void checkIfRecentChatAlreadyExist() {
+        FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").
+                child(FirebaseAuth.getInstance().getUid()).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                recentChatsModelTemp = dataSnapshot.getValue(RecentChatsModel.class);
+                recentList.add(recentChatsModelTemp);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    public void makeRecentChats(String msgtext) {
+        boolean flag = false;
+        String push1 = null, push2 = null;
+        for (int position = 0; position < recentList.size(); position++) {
+            if (recentList.get(position).getUser2_uid().equals(user2_uid)) {
+                push1 = recentList.get(position).getUser1_pushid();
+                push2 = recentList.get(position).getUser2_pushid();
+                flag = true;
+            }
+        }
+        // if user is not in recent chats...
+        if (flag == false) {
+
+            // user 1 recent chat...
+
+            recentChatsModel.setLastMsg(msgtext);
+            recentChatsModel.setTimestamp(System.currentTimeMillis() / 1000);
+            recentChatsModel.setLastMsg(msgtext);
+            recentChatsModel.setPhone(user2_number);
+
+            recentChatsModel.setCombined_uid(msgUid);
+            recentChatsModel.setUser1_pushid(user1_pushid);
+            recentChatsModel.setUser2_pushid(user2_pushid);
+
+            recentChatsModel.setUser1_uid(user1_uid);
+            recentChatsModel.setUser2_uid(user2_uid);
+
+            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(user1_uid).child(user1_pushid).setValue(recentChatsModel);
+
+
+            // user 2 recent chat...
+
+            recentChatsModel.setUser1_pushid(user2_pushid);
+            recentChatsModel.setUser2_pushid(user1_pushid);
+            recentChatsModel.setPhone(user1_number);
+            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(user2_uid).child(user2_pushid).setValue(recentChatsModel);
+
+        }
+        // if user is already in recent chats...
+        else {
+            // user 1 recent chat
+
+            recentChatsModel.setLastMsg(msgtext);
+            recentChatsModel.setTimestamp(System.currentTimeMillis() / 1000);
+            recentChatsModel.setLastMsg(msgtext);
+            recentChatsModel.setPhone(user2_number);
+
+            recentChatsModel.setCombined_uid(msgUid);
+            recentChatsModel.setUser1_pushid(push1);
+            recentChatsModel.setUser2_pushid(push2);
+
+            recentChatsModel.setUser1_uid(user1_uid);
+            recentChatsModel.setUser2_uid(user2_uid);
+            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(user1_uid).child(push1).setValue(recentChatsModel);
+
+            // user 2 recent chat
+
+            recentChatsModel.setUser1_pushid(push1);
+            recentChatsModel.setUser2_pushid(push2);
+            recentChatsModel.setPhone(user1_number);
+            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(user2_uid).child(push2).setValue(recentChatsModel);
+
+        }
+    }
+
 
 }

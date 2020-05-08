@@ -3,14 +3,11 @@ package com.startup.chatapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
 
         searchMethod();
 
-//
+
 //        FirebaseDatabase.getInstance().getReference("Users").keepSynced(true);
 
 
@@ -105,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
             } else if (number.substring(0, 1).contains("3")) {
                 number = "+92" + number;
             }
-            arrayList.add(new ContactsModel(name, number,""));
+            arrayList.add(new ContactsModel(name, number, ""));
         }
 
 
@@ -123,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
     }
 
 
+    /*Compare firebase contacts with local contacts and add to list*/
     ArrayList<ContactsModel> contactList = new ArrayList<>();
 
     public void getAllUsersFromFirebase() {
@@ -134,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
                     // comparing phone numbers
                     for (ContactsModel contactsModel : arrayList) {
                         if (person.getPhoneNumber().equals(contactsModel.getContactNumber())) {
-                            contactList.add(new ContactsModel(contactsModel.getContactName(), contactsModel.getContactNumber(),person.getUid()));
+                            contactList.add(new ContactsModel(contactsModel.getContactName(), contactsModel.getContactNumber(), person.getUid()));
                         }
                     }
                 }
@@ -206,18 +204,19 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
     /*Bake RecyclerView==============================================================*/
     private void bakeRecyclerView(ArrayList<ContactsModel> contactsModels) {
 
-        contactAdapter = new ContactAdapter(contactsModels, context,this);
+        contactAdapter = new ContactAdapter(contactsModels, context, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(contactAdapter);
     }
 
 
-    String p_user, c_user;
+    /*Combine chat uId's...*/
+    String user2_uid, user1_uid;
 
-    public String getChatUid(int postion) {
-        c_user = FirebaseAuth.getInstance().getUid();
-        p_user = contactList.get(postion).getUid();
-        return setOnetoOneChat(c_user, p_user);
+    public String getCombinedUid(int postion) {
+        user1_uid = FirebaseAuth.getInstance().getUid();
+        user2_uid = contactList.get(postion).getUid();
+        return setOnetoOneChat(user1_uid, user2_uid);
     }
 
     public String setOnetoOneChat(String uid1, String uid2) {
@@ -249,17 +248,18 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
     }
 
 
+    /* Open Chat Activity -----*/
     @Override
     public void onItemClick(int position) {
-        String msgUid=getChatUid(position);
-        if(msgUid.equals("Error")){
+        String msgUid = getCombinedUid(position);
+        if (msgUid.equals("Error")) {
             Toast.makeText(context, "You connot msg yourself", Toast.LENGTH_SHORT).show();
-        }else {
-            Intent intent=new Intent(this, ChatActivity.class);
-            intent.putExtra("msgUid",msgUid);
-            intent.putExtra("otheruid",p_user);
-            intent.putExtra("number",contactList.get(position).getContactNumber());
-            intent.putExtra("opt","ContactActivity");
+        } else {
+            Intent intent = new Intent(this, ChatActivity.class);
+            intent.putExtra("msgUid", msgUid);
+            intent.putExtra("user2_uid", user2_uid);
+            intent.putExtra("user2_number", contactList.get(position).getContactNumber());
+            intent.putExtra("key", "ContactActivity");
             startActivity(intent);
         }
     }
