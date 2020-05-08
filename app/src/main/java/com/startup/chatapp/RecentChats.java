@@ -28,8 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.startup.chatapp.adapters.RecentAdapter;
 import com.startup.chatapp.chat.ChatActivity;
 import com.startup.chatapp.model.ContactsModel;
-import com.startup.chatapp.model.IndChatList;
-import com.startup.chatapp.model.Person;
+import com.startup.chatapp.model.RecentChatsModel;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -82,7 +81,6 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-
         if (grantResults.length > 0 & grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show();
         } else {
@@ -90,9 +88,9 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
         }
 
     }
-    private void bakeRecyclerView(ArrayList<IndChatList> indChatLists) {
+    private void bakeRecyclerView(ArrayList<RecentChatsModel> recentChatsModels) {
 
-        recentAdapter = new RecentAdapter(context,indChatLists,this);
+        recentAdapter = new RecentAdapter(context, recentChatsModels,this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(recentAdapter);
     }
@@ -120,14 +118,7 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
             number = number.replaceAll("\\(", "");
             number = number.replaceAll("\\)", "");
 
-        /*
-            if index[0] == 0
-                remove 0;
-                concat num with +92
-            else if index[0] == "3"
-                concat num with +92
 
-        */
             if (number.substring(0, 1).contains("0")) {
                 number = number.substring(1);
                 number = "+92" + number;
@@ -156,31 +147,31 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     }
 
 
-    ArrayList<IndChatList> indChatLists = new ArrayList<>();
+    ArrayList<RecentChatsModel> recentChatsModels = new ArrayList<>();
 
     public void getAllUsersFromFirebase() {
-        FirebaseDatabase.getInstance().getReference("IndChatList").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("RecentChatsModel").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     for(DataSnapshot grandchild: child.getChildren()) {
-                        IndChatList indChatList = grandchild.getValue(IndChatList.class);
-                        Log.d("MyError", "onDataChange: " + indChatList.getPhone());
+                        RecentChatsModel recentChatsModel = grandchild.getValue(RecentChatsModel.class);
+                        Log.d("MyError", "onDataChange: " + recentChatsModel.getPhone());
                         // comparing phone numbers
                         for (ContactsModel contactsModel : arrayList) {
-                            if (indChatList.getPhone().equals(contactsModel.getContactNumber())) {
-                                indChatList.setName(contactsModel.getContactName());
-                                indChatLists.add(indChatList);
+                            if (recentChatsModel.getPhone().equals(contactsModel.getContactNumber())) {
+                                recentChatsModel.setName(contactsModel.getContactName());
+                                recentChatsModels.add(recentChatsModel);
                             }
                         }
                     }
                 }
 
-                LinkedHashSet<IndChatList> hashSet = new LinkedHashSet<>(indChatLists);
-                indChatLists.clear();
-                indChatLists = new ArrayList<>(hashSet);
+                LinkedHashSet<RecentChatsModel> hashSet = new LinkedHashSet<>(recentChatsModels);
+                recentChatsModels.clear();
+                recentChatsModels = new ArrayList<>(hashSet);
 
-                bakeRecyclerView(indChatLists);
+                bakeRecyclerView(recentChatsModels);
             }
 
             @Override
@@ -194,9 +185,9 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
 
     @Override
     public void ItemClick(int position) {
-        IndChatList indChatList=indChatLists.get(position);
+        RecentChatsModel recentChatsModel = recentChatsModels.get(position);
         Intent intent=new Intent(RecentChats.this, ChatActivity.class);
-        intent.putExtra("obj",indChatList);
+        intent.putExtra("obj", recentChatsModel);
         intent.putExtra("opt","RecentActivity");
         startActivity(intent);
     }

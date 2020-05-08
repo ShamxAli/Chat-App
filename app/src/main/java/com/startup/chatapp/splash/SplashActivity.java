@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.startup.chatapp.MainActivity;
 import com.startup.chatapp.R;
 import com.startup.chatapp.RecentChats;
 import com.startup.chatapp.phoneauthentication.PhoneLoginActivity;

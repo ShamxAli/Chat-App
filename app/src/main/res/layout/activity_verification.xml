@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".authentication.phoneauthentication.VerificationActivity">
+    tools:context=".phoneauthentication.VerificationActivity">
 
     <ImageView
         android:layout_width="match_parent"
@@ -116,6 +116,7 @@
 
             <Button
                 android:id="@+id/submit"
+                android:onClick="btnSubmit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -142,6 +143,7 @@
                     android:textSize="14dp" />
 
                 <TextView
+                    android:onClick="btnResend"
                     android:id="@+id/resend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

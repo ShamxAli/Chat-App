@@ -1,10 +1,6 @@
 package com.startup.chatapp.adapters;
 
-import android.annotation.SuppressLint;
-import android.content.ClipData;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.startup.chatapp.R;
 import com.startup.chatapp.model.ContactsModel;
-import com.startup.chatapp.model.IndChatList;
 
 import java.util.ArrayList;
 
@@ -24,7 +19,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
     private ArrayList<ContactsModel> data;
     private Context context;
-    ItemOnClickListener itemOnClickListener;
+    private ItemOnClickListener itemOnClickListener;
 
     public ContactAdapter(ArrayList<ContactsModel> data, Context context , ItemOnClickListener itemOnClickListener) {
         this.data = data;

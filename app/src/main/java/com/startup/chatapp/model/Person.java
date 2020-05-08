@@ -3,11 +3,10 @@ package com.startup.chatapp.model;
 public class Person {
 
 
-    String uid;
-    String phoneNumber;
+    private String uid;
+    private String phoneNumber;
 
     public Person() {
-
     }
 
     public Person(String uid, String phoneNumber) {

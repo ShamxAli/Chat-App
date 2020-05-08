@@ -9,21 +9,7 @@ public class ContactsModel {
     private String contactNumber;
     private String uid;
 
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
-    }
 
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
 
     /*Constructor*/
    public ContactsModel(String name, String number, String uid) {
@@ -32,6 +18,30 @@ public class ContactsModel {
        this.uid = uid;
     }
 
+    /*Getters Setters */
+    public String getContactName() {
+        return contactName;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     /*For remove duplication*/
 
@@ -48,13 +58,6 @@ public class ContactsModel {
         return Objects.hash( contactNumber);
     }
 
-    /*Getters*/
-    public String getContactName() {
-        return contactName;
-    }
 
-    public String getContactNumber() {
-        return contactNumber;
-    }
 
 }

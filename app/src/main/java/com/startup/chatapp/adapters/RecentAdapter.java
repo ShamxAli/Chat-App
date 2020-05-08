@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startup.chatapp.R;
-import com.startup.chatapp.model.IndChatList;
+import com.startup.chatapp.model.RecentChatsModel;
 
 import java.util.Calendar;
 import java.util.List;
@@ -20,12 +20,12 @@ import java.util.Locale;
 public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.RecentViewHolder> {
 
     Context context;
-    List<IndChatList> indChatListList;
-    OnItemClick onItemClick;
+    private List<RecentChatsModel> recentChatList;
+    private OnItemClick onItemClick;
 
-    public RecentAdapter(Context context, List<IndChatList> indChatListList, OnItemClick onItemClick) {
+    public RecentAdapter(Context context, List<RecentChatsModel> recentChatList, OnItemClick onItemClick) {
         this.context = context;
-        this.indChatListList = indChatListList;
+        this.recentChatList = recentChatList;
         this.onItemClick = onItemClick;
     }
 
@@ -39,19 +39,21 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.RecentView
 
     @Override
     public void onBindViewHolder(@NonNull RecentViewHolder holder, int position) {
-        IndChatList indChatList = indChatListList.get(position);
+        RecentChatsModel recentChatsModel = recentChatList.get(position);
+        // timestamp---
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-        cal.setTimeInMillis(indChatList.getTimestamp() * 1000L);
+        cal.setTimeInMillis(recentChatsModel.getTimestamp() * 1000L);
         String date = DateFormat.format("hh:mm aa", cal).toString();
 
-        holder.name.setText(indChatList.getName());
-        holder.lastmsg.setText(indChatList.getLastmsg());
+
+        holder.name.setText(recentChatsModel.getName());
+        holder.lastmsg.setText(recentChatsModel.getLastMsg());
         holder.timestamp.setText(date);
     }
 
     @Override
     public int getItemCount() {
-        return indChatListList.size();
+        return recentChatList.size();
     }
 
     public class RecentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -76,6 +78,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.RecentView
         }
     }
 
+    // onClick Interface
     public interface OnItemClick{
         void ItemClick(int position);
     }

@@ -5,13 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -20,7 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.startup.chatapp.R;
 import com.startup.chatapp.adapters.MessageAdapter;
-import com.startup.chatapp.model.IndChatList;
+import com.startup.chatapp.model.RecentChatsModel;
 import com.startup.chatapp.model.MessageModelClass;
 
 import java.util.ArrayList;
@@ -37,10 +34,10 @@ public class ChatActivity extends AppCompatActivity {
     MessageAdapter messageAdapter;
     List<MessageModelClass> msgList=new ArrayList<>();
     String otheruid;
-    IndChatList indChatList;
+    RecentChatsModel recentChatsModel;
     String number;
     boolean flag;
-    IndChatList intentObj;
+    RecentChatsModel intentObj;
 
     @Override
     protected void onStart() {
@@ -56,7 +53,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         text=findViewById(R.id.text_send);
         messageModelClass=new MessageModelClass();
-        indChatList=new IndChatList();
+        recentChatsModel =new RecentChatsModel();
         uid=FirebaseAuth.getInstance().getUid();
         opt=getIntent().getStringExtra("opt");
         if(opt.equals("ContactActivity")) {
@@ -64,9 +61,9 @@ public class ChatActivity extends AppCompatActivity {
             otheruid = getIntent().getStringExtra("otheruid");
             number = getIntent().getStringExtra("number");
         }else{
-            intentObj= (IndChatList) getIntent().getSerializableExtra("obj");
-            msgUid=intentObj.getMsguid();
-            otheruid=intentObj.getOtheruid();
+            intentObj= (RecentChatsModel) getIntent().getSerializableExtra("obj");
+            msgUid=intentObj.getCombined_uid();
+            otheruid=intentObj.getUser2_uid();
             number=intentObj.getPhone();
         }
         mypush=FirebaseDatabase.getInstance().getReference().push().getKey();
@@ -103,14 +100,14 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    IndChatList indChatListAlreadyExists;
-    List<IndChatList> indChatListList=new ArrayList<>();
+    RecentChatsModel recentChatsModelAlreadyExists;
+    List<RecentChatsModel> recentList =new ArrayList<>();
     public void checkIfAlreadyExits(){
-        FirebaseDatabase.getInstance().getReference().child("IndChatList").child(FirebaseAuth.getInstance().getUid()).addChildEventListener(new ChildEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(FirebaseAuth.getInstance().getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                indChatListAlreadyExists = dataSnapshot.getValue(IndChatList.class);
-                indChatListList.add(indChatListAlreadyExists);
+                recentChatsModelAlreadyExists = dataSnapshot.getValue(RecentChatsModel.class);
+                recentList.add(recentChatsModelAlreadyExists);
             }
 
             @Override
@@ -138,10 +135,10 @@ public class ChatActivity extends AppCompatActivity {
     public void makeChatBox(String msgtext) {
         boolean flag = false;
         String push1 = null,push2=null;
-        for (int i = 0; i < indChatListList.size(); i++) {
-           if(indChatListList.get(i).getOtheruid().equals(otheruid)){
-               push1=indChatListList.get(i).getMypushid();
-               push2=indChatListList.get(i).getOtherpushid();
+        for (int i = 0; i < recentList.size(); i++) {
+           if(recentList.get(i).getUser2_uid().equals(otheruid)){
+               push1= recentList.get(i).getUser1_pushid();
+               push2= recentList.get(i).getUser2_pushid();
                flag=true;
            }
         }
@@ -149,38 +146,38 @@ public class ChatActivity extends AppCompatActivity {
             // create individual list
             Log.d("LOLLL", "makeChatBox: "+msgUid);
 
-            indChatList.setMypushid(mypush);
-            indChatList.setOtherpushid(otherpush);
-            indChatList.setOtheruid(otheruid);
-            indChatList.setTimestamp(System.currentTimeMillis()/1000);
-            indChatList.setLastmsg(msgtext);
-            indChatList.setPhone(number);
-            indChatList.setMsguid(msgUid);
-            FirebaseDatabase.getInstance().getReference().child("IndChatList").child(uid).child(mypush).setValue(indChatList);
+            recentChatsModel.setUser1_pushid(mypush);
+            recentChatsModel.setUser2_pushid(otherpush);
+            recentChatsModel.setUser2_uid(otheruid);
+            recentChatsModel.setTimestamp(System.currentTimeMillis()/1000);
+            recentChatsModel.setLastMsg(msgtext);
+            recentChatsModel.setPhone(number);
+            recentChatsModel.setCombined_uid(msgUid);
+            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(uid).child(mypush).setValue(recentChatsModel);
 
-            indChatList.setMsguid(msgUid);
-            indChatList.setMypushid(otherpush);
-            indChatList.setOtherpushid(mypush);
-            indChatList.setPhone(mynumber);
-            indChatList.setOtheruid(uid);
-            FirebaseDatabase.getInstance().getReference().child("IndChatList").child(otheruid).child(otherpush).setValue(indChatList);
+            recentChatsModel.setCombined_uid(msgUid);
+            recentChatsModel.setUser1_pushid(otherpush);
+            recentChatsModel.setUser2_pushid(mypush);
+            recentChatsModel.setPhone(mynumber);
+            recentChatsModel.setUser2_uid(uid);
+            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(otheruid).child(otherpush).setValue(recentChatsModel);
 
         } else {
 
-            indChatList.setMsguid(msgUid);
-            indChatList.setMypushid(push1);
-            indChatList.setOtherpushid(push2);
-            indChatList.setOtheruid(otheruid);
-            indChatList.setTimestamp(System.currentTimeMillis()/1000);
-            indChatList.setLastmsg(msgtext);
-            indChatList.setPhone(number);
-            FirebaseDatabase.getInstance().getReference().child("IndChatList").child(uid).child(push1).setValue(indChatList);
-            indChatList.setMsguid(otheruid);
-            indChatList.setMypushid(push2);
-            indChatList.setOtherpushid(push1);
-            indChatList.setPhone(mynumber);
-            indChatList.setOtheruid(uid);
-            FirebaseDatabase.getInstance().getReference().child("IndChatList").child(otheruid).child(push2).setValue(indChatList);
+            recentChatsModel.setCombined_uid(msgUid);
+            recentChatsModel.setUser1_pushid(push1);
+            recentChatsModel.setUser2_pushid(push2);
+            recentChatsModel.setUser2_uid(otheruid);
+            recentChatsModel.setTimestamp(System.currentTimeMillis()/1000);
+            recentChatsModel.setLastMsg(msgtext);
+            recentChatsModel.setPhone(number);
+            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(uid).child(push1).setValue(recentChatsModel);
+            recentChatsModel.setCombined_uid(otheruid);
+            recentChatsModel.setUser1_pushid(push2);
+            recentChatsModel.setUser2_pushid(push1);
+            recentChatsModel.setPhone(mynumber);
+            recentChatsModel.setUser2_uid(uid);
+            FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(otheruid).child(push2).setValue(recentChatsModel);
 
         }
     }

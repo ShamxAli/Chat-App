@@ -33,60 +33,60 @@ import com.tuyenmonkey.mkloader.MKLoader;
 import java.util.concurrent.TimeUnit;
 
 public class VerificationActivity extends AppCompatActivity {
-
+    // Views
     private EditText otp;
-    private Button submit;
     private TextView resend;
+
+    // Firebase
     private MKLoader loader;
-    private String number, id;
     private FirebaseAuth mAuth;
     FirebaseDatabase mDatabase;
     DatabaseReference mRef;
 
+    // Global
+    private String number, id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
+        loader = findViewById(R.id.loader);
+        number = getIntent().getStringExtra("number");
+        otp = findViewById(R.id.otp);
+        resend = findViewById(R.id.resend);
+
+
+        // Firebase init
         mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference("Users");
-        otp = findViewById(R.id.otp);
-        submit = findViewById(R.id.submit);
-        resend = findViewById(R.id.resend);
-        loader = findViewById(R.id.loader);
-
-
         mAuth = FirebaseAuth.getInstance();
-        number = getIntent().getStringExtra("number");
+
 
         sendVerificationCode();
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (TextUtils.isEmpty(otp.getText().toString())) {
-                    Toast.makeText(VerificationActivity.this, "Enter Otp", Toast.LENGTH_SHORT).show();
-                } else if (otp.getText().toString().replace(" ", "").length() != 6) {
-                    Toast.makeText(VerificationActivity.this, "Enter right otp", Toast.LENGTH_SHORT).show();
-                } else {
-                    loader.setVisibility(View.VISIBLE);
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(id, otp.getText().toString().replace(" ", ""));
-                    signInWithPhoneAuthCredential(credential);
-                }
-            }
-        });
-
-        resend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendVerificationCode();
-            }
-        });
-
     }
 
-    private void sendVerificationCode() {
+    // Button Submit
+    public void btnSubmit(View view) {
+        if (TextUtils.isEmpty(otp.getText().toString())) {
+            Toast.makeText(VerificationActivity.this, "Enter Otp", Toast.LENGTH_SHORT).show();
+        } else if (otp.getText().toString().replace(" ", "").length() != 6) {
+            Toast.makeText(VerificationActivity.this, "Enter right otp", Toast.LENGTH_SHORT).show();
+        } else {
+            loader.setVisibility(View.VISIBLE);
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(id, otp.getText().toString().replace(" ", ""));
+            signInWithPhoneAuthCredential(credential);
+        }
+    }
 
+    // Button resend(tv)
+    public void btnResend(View view) {
+        sendVerificationCode();
+    }
+
+
+    // Resend verification code
+    private void sendVerificationCode() {
         new CountDownTimer(60000, 1000) {
             @Override
             public void onTick(long l) {
@@ -102,6 +102,7 @@ public class VerificationActivity extends AppCompatActivity {
         }.start();
 
 
+        // Verify phone number automatically
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 number,        // Phone number to verify
                 60,                 // Timeout duration
@@ -151,6 +152,4 @@ public class VerificationActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
 }

@@ -4,15 +4,10 @@ public class MessageModelClass {
     private String msg;
     private String msgId;
     private String uid;
+    private long timestamp;
 
-    public String getUid() {
-        return uid;
-    }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
+    /*Constructors*/
     public MessageModelClass(String msg, String msgId, String uid, long timestamp) {
         this.msg = msg;
         this.msgId = msgId;
@@ -23,6 +18,30 @@ public class MessageModelClass {
     public MessageModelClass() {
     }
 
+    public MessageModelClass(String msg, String msgId, long timestamp) {
+        this.msg = msg;
+        this.msgId = msgId;
+        this.timestamp = timestamp;
+    }
+
+
+    public MessageModelClass(String msg, long timestamp) {
+        this.msg = msg;
+        this.timestamp = timestamp;
+    }
+
+
+
+    /*Getter Setters*/
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+
     public String getMsgId() {
         return msgId;
     }
@@ -31,13 +50,6 @@ public class MessageModelClass {
         this.msgId = msgId;
     }
 
-    public MessageModelClass(String msg, String msgId, long timestamp) {
-        this.msg = msg;
-        this.msgId = msgId;
-        this.timestamp = timestamp;
-    }
-
-    private long timestamp;
 
     public String getMsg() {
         return msg;
@@ -56,8 +68,5 @@ public class MessageModelClass {
         this.timestamp = timestamp;
     }
 
-    public MessageModelClass(String msg, long timestamp) {
-        this.msg = msg;
-        this.timestamp = timestamp;
-    }
+
 }

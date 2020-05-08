@@ -16,13 +16,13 @@
         android:padding="15dp" />
 
 
-    <TextView
-        android:id="@+id/tv_numOfContacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginEnd="10dp"
-        android:text="Contacts" />
+<!--    <TextView-->
+<!--        android:id="@+id/tv_numOfContacts"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="end"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:text="Contacts" />-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

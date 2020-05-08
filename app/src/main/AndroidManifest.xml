@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".RecentChats"></activity>
-        <activity android:name=".chat.ChatActivity" />
+        <activity android:name=".chat.ChatActivity" android:parentActivityName=".RecentChats" />
         <activity android:name=".MainActivity" />
         <activity android:name=".splash.SplashActivity">
             <intent-filter>

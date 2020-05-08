@@ -23,20 +23,21 @@ import java.util.Locale;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
 
-    Context context;
-    List<MessageModelClass> msgList = new ArrayList<>();
-    public static final int VIEW_TYPE_MESSAGE_SENT=1;
-    public static final int VIEW_TYPE_MESSAGE_RECEIVED=2;
-    String uid;
+    private Context context;
+    private List<MessageModelClass> msgList;
+    private static final int VIEW_TYPE_MESSAGE_SENT = 1;
+    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
+    private String uid;
 
-    public MessageAdapter(Context context, List<MessageModelClass> msgList){
-        this.msgList=msgList;
-        this.context=context;
-        uid=FirebaseAuth.getInstance().getUid();
+    public MessageAdapter(Context context, List<MessageModelClass> msgList) {
+        this.msgList = msgList;
+        this.context = context;
+        uid = FirebaseAuth.getInstance().getUid();
     }
+
     @Override
     public int getItemViewType(int position) {
-        MessageModelClass message =  msgList.get(position);
+        MessageModelClass message = msgList.get(position);
 
         if (message.getUid().equals(uid)) {
             // If the current user is the sender of the message
@@ -67,7 +68,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        MessageModelClass messageModelClass=msgList.get(position);
+        MessageModelClass messageModelClass = msgList.get(position);
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(messageModelClass.getTimestamp() * 1000L);
         String date = DateFormat.format("dd-MM-yyyy hh:mm:ss aa", cal).toString();
@@ -82,15 +83,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
 
-
-
     public class MessageViewHolder extends RecyclerView.ViewHolder {
-        TextView time,msg;
+        TextView time, msg;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            msg=itemView.findViewById(R.id.showmsg);
-            time=itemView.findViewById(R.id.datetime);
+            msg = itemView.findViewById(R.id.showmsg);
+            time = itemView.findViewById(R.id.datetime);
         }
     }
 

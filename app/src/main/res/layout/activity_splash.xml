@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".authentication.SplashActivity">
+    tools:context=".splash.SplashActivity">
 
     <ImageView
         android:layout_width="match_parent"
@@ -21,25 +21,23 @@
 
 
         <ImageView
-
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
+            android:id="@+id/img"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_marginBottom="100dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/logo" />
-
-
-        <com.airbnb.lottie.LottieAnimationView
             android:layout_centerInParent="true"
-            android:id="@+id/animation_view"
+            android:layout_centerHorizontal="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_interface" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:lottie_autoPlay="true"
-            app:lottie_fileName="white_loading.json"
-            app:lottie_loop="true" />
-
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="200dp"
+            android:text="Chat App"
+            android:textColor="@color/white"
+            android:textSize="35sp" />
 
     </RelativeLayout>
 

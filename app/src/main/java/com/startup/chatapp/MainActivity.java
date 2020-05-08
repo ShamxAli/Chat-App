@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
+        setTitle("Contacts");
 
 
         /*Run All Operations*/
@@ -63,22 +64,11 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
 
         searchMethod();
 
-
-        /*Show number of contacts*/
-        textView.setText("Number of contacts " + arrayList.size());
-        FirebaseDatabase.getInstance().getReference("Users").keepSynced(true);
+//
+//        FirebaseDatabase.getInstance().getReference("Users").keepSynced(true);
 
 
     }
-
-
-    /*Permission Code = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
-
-
-
-
-
 
 
     /*Read Contacts ======================================================================================================*/
@@ -192,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
         // New ArrayList...
         ArrayList<ContactsModel> filteredList = new ArrayList<>();
 
-        for (ContactsModel items : arrayList) {
+        for (ContactsModel items : contactList) {
             if (items.getContactName().toLowerCase().contains(text.toLowerCase()) ||
                     items.getContactNumber().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(items);
@@ -208,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
     /*Views Initialization===========================================================*/
     private void initViews() {
         recyclerView = findViewById(R.id.recyclerView);
-        textView = findViewById(R.id.tv_numOfContacts);
+//        textView = findViewById(R.id.tv_numOfContacts);
         editText = findViewById(R.id.edit_search);
     }
 
