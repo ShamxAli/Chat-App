@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 
-
 public class RecentChats extends AppCompatActivity implements RecentAdapter.OnItemClick {
     FloatingActionButton fab;
     RecyclerView recyclerView;
@@ -46,65 +45,32 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat2);
-        fab = findViewById(R.id.fab);
-        recyclerView=findViewById(R.id.recyclerview_recent);
-        context=this;
+        setContentView(R.layout.activity_recent_chats);
+        context = this;
+        initViews();
 
+        // Read contacts
         readContacts();
-    }
-
-    public void fabClick(View view) {
-        Intent intent = new Intent(RecentChats.this , MainActivity.class);
-        startActivity(intent);
-    }
 
 
-    private void isAllowed() {
-
-        if (ContextCompat.checkSelfPermission(RecentChats.this, Manifest.permission.READ_CONTACTS)
-                + ContextCompat.checkSelfPermission(RecentChats.this, Manifest.permission.CALL_PHONE)
-                != PackageManager.PERMISSION_GRANTED) {
-            askForPermission();
-        }
-    }
-
-    /*Ask if not allowed*/
-    private void askForPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE}, 1);
-
-        }
-    }
-
-    /*Permission Results*/
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (grantResults.length > 0 & grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Permission not granted", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-    private void bakeRecyclerView(ArrayList<RecentChatsModel> recentChatsModels) {
-
-        recentAdapter = new RecentAdapter(context, recentChatsModels,this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(recentAdapter);
+        LinkedHashSet<RecentChatsModel> hashSet = new LinkedHashSet<>(recentChatsArrayList);
+        recentChatsArrayList.clear();
+        recentChatsArrayList = new ArrayList<>(hashSet);
+        bakeRecyclerView(recentChatsArrayList);
     }
 
 
     /*Read Contacts ======================================================================================================*/
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void readContacts() {
 
-        isAllowed();
+        // Permission checking...
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            isAllowed();
+        }
 
+
+        // Reading...
         Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 
@@ -127,9 +93,9 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
             } else if (number.substring(0, 1).contains("3")) {
                 number = "+92" + number;
             }
-            if(number.equals(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())){
+            if (number.equals(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())) {
 
-            }else {
+            } else {
                 arrayList.add(new ContactsModel(name, number, ""));
             }
         }
@@ -147,33 +113,63 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
 
         getAllUsersFromFirebase();
     }
+    /*==============================================================================================================*/
 
 
-    ArrayList<RecentChatsModel> recentChatsModels = new ArrayList<>();
+    /*Permissions ================================================================================================*/
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void isAllowed() {
+        if (ContextCompat.checkSelfPermission(RecentChats.this, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 1);
+        }
+
+    }
+
+    /*Permission Results*/
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (grantResults.length > 0 & grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Permission not granted", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    /* ============================================================================================================*/
+
+
+    /*Recent chat logic*/
+    ArrayList<RecentChatsModel> recentChatsArrayList = new ArrayList<>();
 
     public void getAllUsersFromFirebase() {
-        FirebaseDatabase.getInstance().getReference("RecentChatsModel").addListenerForSingleValueEvent(new ValueEventListener() {
+
+        FirebaseDatabase.getInstance().getReference("RecentChatsModel").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("TAGTAG...", "onDataChange: added called");
+                // Clearing the list..
+                recentChatsArrayList.clear();
+                // ...
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    for(DataSnapshot grandchild: child.getChildren()) {
+                    for (DataSnapshot grandchild : child.getChildren()) {
                         RecentChatsModel recentChatsModel = grandchild.getValue(RecentChatsModel.class);
                         Log.d("MyError", "onDataChange: " + recentChatsModel.getPhone());
+
                         // comparing phone numbers
+
                         for (ContactsModel contactsModel : arrayList) {
                             if (recentChatsModel.getPhone().equals(contactsModel.getContactNumber())) {
                                 recentChatsModel.setName(contactsModel.getContactName());
-                                recentChatsModels.add(recentChatsModel);
+                                recentChatsArrayList.add(recentChatsModel);
                             }
                         }
+                        recentAdapter.notifyDataSetChanged();
                     }
                 }
-
-                LinkedHashSet<RecentChatsModel> hashSet = new LinkedHashSet<>(recentChatsModels);
-                recentChatsModels.clear();
-                recentChatsModels = new ArrayList<>(hashSet);
-
-                bakeRecyclerView(recentChatsModels);
             }
 
             @Override
@@ -184,13 +180,35 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     }
 
 
-
+    /* Single Item click listener...*/
     @Override
     public void ItemClick(int position) {
-        RecentChatsModel recentChatsModel = recentChatsModels.get(position);
-        Intent intent=new Intent(RecentChats.this, ChatActivity.class);
+        RecentChatsModel recentChatsModel = recentChatsArrayList.get(position);
+        Intent intent = new Intent(RecentChats.this, ChatActivity.class);
         intent.putExtra("object", recentChatsModel);
-        intent.putExtra("key","RecentActivity");
+        intent.putExtra("key", "RecentActivity");
         startActivity(intent);
     }
+
+
+    // initViews
+    private void initViews() {
+        fab = findViewById(R.id.fab);
+        recyclerView = findViewById(R.id.recyclerview_recent);
+    }
+
+    // Fab icon click...
+    public void fabClick(View view) {
+        Intent intent = new Intent(RecentChats.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    // bake recyclerView
+    private void bakeRecyclerView(ArrayList<RecentChatsModel> recentChatsModels) {
+        recentAdapter = new RecentAdapter(context, recentChatsModels, this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(recentAdapter);
+    }
+
+
 }

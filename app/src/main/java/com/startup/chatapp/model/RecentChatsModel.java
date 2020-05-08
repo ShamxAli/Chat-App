@@ -1,6 +1,7 @@
 package com.startup.chatapp.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class RecentChatsModel implements Serializable {
     private String lastMsg;
@@ -13,7 +14,6 @@ public class RecentChatsModel implements Serializable {
     private String user2_uid;
     private String user1_pushid;
     private String user2_pushid;
-
 
 
     /*Constructors*/
@@ -127,4 +127,18 @@ public class RecentChatsModel implements Serializable {
     public void setUser1_uid(String user1_uid) {
         this.user1_uid = user1_uid;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RecentChatsModel that = (RecentChatsModel) o;
+        return phone.equals(that.phone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(phone);
+    }
+
 }
