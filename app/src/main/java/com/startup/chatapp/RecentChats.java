@@ -35,11 +35,13 @@ import java.util.LinkedHashSet;
 
 
 public class RecentChats extends AppCompatActivity implements RecentAdapter.OnItemClick {
+    public static final String TAG = "TAGTAG";
     FloatingActionButton fab;
     RecyclerView recyclerView;
     RecentAdapter recentAdapter;
     Context context;
     boolean chkRunning;
+    boolean checkPermissionAllowed = false;
 
     ArrayList<ContactsModel> arrayList = new ArrayList<>();
     ArrayList<RecentChatsModel> recentChatsArrayList = new ArrayList<>();
@@ -56,7 +58,10 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
         chkRunning = true;
 
         // Read contacts
-        readContacts();
+        if (checkPermissionAllowed) {
+            readContacts();
+        }
+
 
         // Observing chats with LISTENER...
 
@@ -136,9 +141,21 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     }
 
     // Fab icon click...
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void fabClick(View view) {
-        Intent intent = new Intent(RecentChats.this, MainActivity.class);
-        startActivity(intent);
+        // Permission checking...
+        onTheGo();
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void onTheGo() {
+        if (!checkPermissionAllowed) {
+            isAllowed();
+        } else {
+            Intent intent = new Intent(RecentChats.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 
     // bake recyclerView
@@ -151,11 +168,6 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     /*Read Contacts =======================*/
 
     public void readContacts() {
-
-        // Permission checking...
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            isAllowed();
-        }
 
 
         // Reading...
@@ -215,12 +227,16 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     }
 
     // Permission Results
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (grantResults.length > 0 & grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.length > 0 & grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show();
+            checkPermissionAllowed = true;
+            onTheGo();
+
         } else {
             Toast.makeText(context, "Permission not granted", Toast.LENGTH_SHORT).show();
         }

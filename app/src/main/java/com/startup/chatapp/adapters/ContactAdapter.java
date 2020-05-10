@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,7 +22,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
     private Context context;
     private ItemOnClickListener itemOnClickListener;
 
-    public ContactAdapter(ArrayList<ContactsModel> data, Context context , ItemOnClickListener itemOnClickListener) {
+    public ContactAdapter(ArrayList<ContactsModel> data, Context context, ItemOnClickListener itemOnClickListener) {
         this.data = data;
         this.context = context;
         this.itemOnClickListener = itemOnClickListener;
@@ -34,7 +35,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.contact_design, parent, false);
-        return new MyViewHolder(view , itemOnClickListener);
+        return new MyViewHolder(view, itemOnClickListener);
 
     }
 
@@ -44,7 +45,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
         holder.tv_name.setText(contactsModel.getContactName());
         holder.tv_num.setText(contactsModel.getContactNumber());
-
 
 
 
@@ -60,12 +60,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
         TextView tv_name;
         TextView tv_num;
+        ImageView imageView;
         ItemOnClickListener itemOnClickListener;
 
-        MyViewHolder(@NonNull View itemView , ItemOnClickListener itemOnClickListener) {
+        MyViewHolder(@NonNull View itemView, ItemOnClickListener itemOnClickListener) {
             super(itemView);
             tv_name = itemView.findViewById(R.id.tv_name);
             tv_num = itemView.findViewById(R.id.tv_number);
+            imageView = itemView.findViewById(R.id.contacts_imageView);
             this.itemOnClickListener = itemOnClickListener;
             itemView.setOnClickListener(this);
         }
@@ -82,7 +84,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
         notifyDataSetChanged();
     }
 
- public interface ItemOnClickListener{
+    public interface ItemOnClickListener {
         public void onItemClick(int position);
- }
+    }
 }

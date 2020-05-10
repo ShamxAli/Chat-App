@@ -64,7 +64,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.RecentView
 
         public RecentViewHolder(@NonNull View itemView,OnItemClick onItemClick) {
             super(itemView);
-            name=itemView.findViewById(R.id.tvName);
+            name=itemView.findViewById(R.id.tv_name);
             lastmsg=itemView.findViewById(R.id.tvLastMsg);
             timestamp=itemView.findViewById(R.id.tvTimeStamp);
             this.onItemClick=onItemClick;

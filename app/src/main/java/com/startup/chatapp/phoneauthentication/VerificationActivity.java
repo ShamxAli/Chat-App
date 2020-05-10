@@ -23,6 +23,7 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.startup.chatapp.InfoActivity;
 import com.startup.chatapp.MainActivity;
 import com.startup.chatapp.RecentChats;
 import com.startup.chatapp.chat.ChatActivity;
@@ -142,7 +143,7 @@ public class VerificationActivity extends AppCompatActivity {
                             Log.d("lol", "onComplete: " + person.getUid() + " " + person.getPhoneNumber());
                             mRef.child(person.getUid()).setValue(person);
 
-                            Intent intent = new Intent(VerificationActivity.this, RecentChats.class);
+                            Intent intent = new Intent(VerificationActivity.this, InfoActivity.class);
                             startActivity(intent);
                             finish();
                             // ...
