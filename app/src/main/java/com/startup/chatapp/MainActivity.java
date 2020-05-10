@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Person person = child.getValue(Person.class);
-                    // comparing phone numbers
+                    // comparing number numbers
                     for (ContactsModel contactsModel : arrayList) {
                         if (person.getPhoneNumber().equals(contactsModel.getContactNumber())) {
                             contactList.add(new ContactsModel(contactsModel.getContactName(), contactsModel.getContactNumber(), person.getUid()));
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
     /*Views Initialization===========================================================*/
     private void initViews() {
         recyclerView = findViewById(R.id.recyclerView);
-//        textView = findViewById(R.id.tv_numOfContacts);
+//        name = findViewById(R.id.tv_numOfContacts);
         editText = findViewById(R.id.edit_search);
     }
 

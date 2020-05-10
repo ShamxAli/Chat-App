@@ -5,10 +5,20 @@ import java.io.Serializable;
 public class Upload implements Serializable {
 
     String name;
+
+
     String url;
+
+
+    String key;
 
     public Upload() {
 
+    }
+
+
+    public Upload(String url) {
+        this.url = url;
     }
 
     public Upload(String name, String url) {
@@ -30,5 +40,13 @@ public class Upload implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
