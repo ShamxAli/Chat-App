@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.startup.chatapp.R;
-import com.startup.chatapp.RecentChats;
+import com.startup.chatapp.activities.RecentChats;
 import com.startup.chatapp.phoneauthentication.PhoneLoginActivity;
 
 public class SplashActivity extends AppCompatActivity {

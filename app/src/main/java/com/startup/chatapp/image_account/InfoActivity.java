@@ -22,7 +22,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.startup.chatapp.R;
-import com.startup.chatapp.RecentChats;
+import com.startup.chatapp.activities.RecentChats;
 import com.startup.chatapp.model.Upload;
 
 public class InfoActivity extends AppCompatActivity {

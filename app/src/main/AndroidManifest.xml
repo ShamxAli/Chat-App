@@ -13,19 +13,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".image_account.AccountActivity"></activity>
-        <activity android:name=".image_account.InfoActivity" />
-        <activity android:name=".RecentChats" />
-        <activity
-            android:name=".chat.ChatActivity"
-            android:parentActivityName=".RecentChats" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".splash.SplashActivity">
+        <activity android:name=".HomeActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity android:name=".image_account.AccountActivity" />
+        <activity android:name=".image_account.InfoActivity" />
+        <activity android:name=".activities.RecentChats" />
+        <activity
+            android:name=".chat.ChatActivity"
+            android:parentActivityName=".activities.RecentChats" />
+        <activity android:name=".activities.MainActivity" />
+        <activity android:name=".splash.SplashActivity">
+
         </activity>
         <activity android:name=".phoneauthentication.VerificationActivity" />
         <activity android:name=".phoneauthentication.PhoneLoginActivity" />

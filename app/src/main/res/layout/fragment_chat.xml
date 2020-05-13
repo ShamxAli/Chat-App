@@ -5,17 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activities.RecentChats">
-
-    <include layout="@layout/toolbar"
-        android:id="@+id/mainToolbar"/>
+    tools:context=".ChatFragment">
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_recent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/mainToolbar"
         android:visibility="invisible"
         tools:listitem="@layout/recycler_view_item"
         tools:visibility="invisible" />
@@ -25,10 +21,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:onClick="fabClick"
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         android:backgroundTint="@color/colorAccent"
-        android:onClick="fabClick"
         android:src="@drawable/ic_comment2"
         app:tint="@null" />
 

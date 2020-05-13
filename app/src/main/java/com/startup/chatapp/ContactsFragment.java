@@ -1,24 +1,25 @@
 package com.startup.chatapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.provider.ContactsContract;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -34,40 +35,43 @@ import com.startup.chatapp.model.Person;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
-public class MainActivity extends AppCompatActivity implements ContactAdapter.ItemOnClickListener {
+public class ContactsFragment extends Fragment implements ContactAdapter.ItemOnClickListener {
 
     /*Variable Initialization ====== */
-    TextView textView;
     RecyclerView recyclerView;
     EditText editText;
-    Context context;
 
     ContactAdapter contactAdapter;
     ArrayList<ContactsModel> arrayList = new ArrayList<>();
 
 
+    public ContactsFragment() {
+
+    }
+
+    // views init...
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        editText = view.findViewById(R.id.edit_search);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        context = this;
-        setTitle("Contacts");
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-
-        /*Run All Operations*/
-
-        initViews();
+        View view = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         readContacts();
 
-        searchMethod();
-
         // enable offline capability...
         FirebaseDatabase.getInstance().getReference("Users").keepSynced(true);
-
-
+        return view;
     }
+
+
 
 
     /*Read Contacts ======================================================================================================*/
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
     public void readContacts() {
 
 
-        Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        Cursor cursor = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 
 
@@ -155,61 +159,12 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
         });
     }
 
-    /*Searching Method======================================================================================*/
-    public void searchMethod() {
-
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                filter(s.toString());
-            }
-        });
-    }
-
-
-    /*Searching filter====================*/
-    public void filter(String text) {
-
-        // New ArrayList...
-        ArrayList<ContactsModel> filteredList = new ArrayList<>();
-
-        for (ContactsModel items : contactList) {
-            if (items.getContactName().toLowerCase().contains(text.toLowerCase()) ||
-                    items.getContactNumber().toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(items);
-            }
-        }
-
-        // passing filtered list to adapter
-        contactAdapter.filter(filteredList);
-
-    }
-
-
-    /*Views Initialization===========================================================*/
-    private void initViews() {
-        recyclerView = findViewById(R.id.recyclerView);
-//        name = findViewById(R.id.tv_numOfContacts);
-        editText = findViewById(R.id.edit_search);
-    }
-
 
     /*Bake RecyclerView==============================================================*/
     private void bakeRecyclerView(ArrayList<ContactsModel> contactsModels) {
 
-        contactAdapter = new ContactAdapter(contactsModels, context, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        contactAdapter = new ContactAdapter(contactsModels, getActivity(), this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(contactAdapter);
     }
 
@@ -259,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
 //        if (msgUid.equals("Error")) {
 //            Toast.makeText(context, "You connot msg yourself", Toast.LENGTH_SHORT).show();
 //        } else {
-        Intent intent = new Intent(this, ChatActivity.class);
+        Intent intent = new Intent(getActivity(), ChatActivity.class);
         intent.putExtra("msgUid", msgUid);
         intent.putExtra("user2_uid", user2_uid);
         intent.putExtra("user2_number", contactList.get(position).getContactNumber());
@@ -268,7 +223,4 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
 //        }
     }
 
-    public void infoGo(View view) {
-        startActivity(new Intent(MainActivity.this, AccountActivity.class));
-    }
 }
