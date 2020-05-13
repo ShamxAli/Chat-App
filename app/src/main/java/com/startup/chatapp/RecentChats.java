@@ -93,9 +93,8 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
                 Log.d("TAGTAG", "onDataChange: added called");
                 // Clearing the list..
                 recentChatsArrayList.clear();
-                if (dataSnapshot != null) {
-                    recyclerView.setVisibility(View.VISIBLE);
-                }
+                recyclerView.setVisibility(View.VISIBLE);
+
                 // ...
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
 

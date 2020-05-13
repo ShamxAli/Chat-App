@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -105,6 +106,9 @@ public class ChatActivity extends AppCompatActivity {
         if (msgtext.equals("")) {
 
         } else {
+
+            MediaPlayer mediaPlayer = MediaPlayer.create(ChatActivity.this, R.raw.voicesend);
+            mediaPlayer.start(); // no need to call prepare(); create() does that for you
             //msg sending code
             // push id under each combined uid(will)
             push = FirebaseDatabase.getInstance().getReference().push().getKey();
@@ -117,6 +121,8 @@ public class ChatActivity extends AppCompatActivity {
             text.setText("");
             // make recent chats
             makeRecentChats(msgtext);
+            /*Sound when message sent...*/
+
         }
     }
 
@@ -179,6 +185,8 @@ public class ChatActivity extends AppCompatActivity {
 
 
     // Getting user1 recent chats and compare for updating purpose (below...)
+
+    // TODO ...
     public void checkIfRecentChatAlreadyExist() {
         FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").
                 child(FirebaseAuth.getInstance().getUid()).addChildEventListener(new ChildEventListener() {
@@ -211,6 +219,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
+    // TODO ...
     public void makeRecentChats(String msgtext) {
         boolean flag = false;
 
@@ -269,8 +278,8 @@ public class ChatActivity extends AppCompatActivity {
 
             // user 2 recent chat
 
-            recentChatsModel.setUser1_pushid(push1);
-            recentChatsModel.setUser2_pushid(push2);
+            recentChatsModel.setUser1_pushid(push2);
+            recentChatsModel.setUser2_pushid(push1);
             recentChatsModel.setPhone(user1_number);
             recentChatsModel.setUser1_uid(user2_uid);
             recentChatsModel.setUser2_uid(user1_uid);

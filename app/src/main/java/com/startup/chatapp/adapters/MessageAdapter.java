@@ -5,10 +5,14 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.TransitionManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.startup.chatapp.R;
@@ -23,6 +27,7 @@ import java.util.Locale;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
 
+    public static final long FADE_DURATION = 2000;
     private Context context;
     private List<MessageModelClass> msgList;
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
@@ -71,11 +76,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         MessageModelClass messageModelClass = msgList.get(position);
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(messageModelClass.getTimestamp() * 1000L);
-        String date = DateFormat.format("dd-MM-yyyy hh:mm:ss aa", cal).toString();
+//        String date = DateFormat.format("dd-MM-yyyy hh:mm:ss aa", cal).toString();
+        String date = DateFormat.format("hh:mm aa", cal).toString();
 
         holder.msg.setText(messageModelClass.getMsg());
         holder.time.setText(date);
+
     }
+
 
     @Override
     public int getItemCount() {
