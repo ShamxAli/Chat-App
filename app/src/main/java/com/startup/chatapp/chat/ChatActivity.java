@@ -32,7 +32,6 @@ public class ChatActivity extends AppCompatActivity {
     // Global variables
     String user1_number;
     String user2_number;
-    boolean flag;
     String comingFrom;
     // to store...
     private String msgUid;
@@ -56,7 +55,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         checkIfRecentChatAlreadyExist();
-        flag = false;
+
     }
 
 
@@ -94,10 +93,13 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setAdapter(messageAdapter);
         //
         user1_number = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+
+        // Get all messages in onCreate();
         getLiveMessagesFromFirebaseDatabase();
     }
 
 
+    /*Send msgs*/
     public void sendMessage(View view) {
         String msgtext = text.getText().toString();
         if (msgtext.equals("")) {
@@ -113,12 +115,13 @@ public class ChatActivity extends AppCompatActivity {
             messageModelClass.setUid(user1_uid);
             FirebaseDatabase.getInstance().getReference().child("ChatSystem").child(msgUid).child(push).setValue(messageModelClass);
             text.setText("");
+            // make recent chats
             makeRecentChats(msgtext);
         }
     }
 
 
-    // Getting chat messages from firebase
+    /*Getting chat messages from firebase*/
     public void getLiveMessagesFromFirebaseDatabase() {
         FirebaseDatabase.getInstance().getReference().child("ChatSystem").child(msgUid).addChildEventListener(new ChildEventListener() {
             @Override
@@ -210,6 +213,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public void makeRecentChats(String msgtext) {
         boolean flag = false;
+
         String push1 = null, push2 = null;
         for (int position = 0; position < recentList.size(); position++) {
             if (recentList.get(position).getUser2_uid().equals(user2_uid)) {
@@ -225,7 +229,6 @@ public class ChatActivity extends AppCompatActivity {
 
             recentChatsModel.setLastMsg(msgtext);
             recentChatsModel.setTimestamp(System.currentTimeMillis() / 1000);
-            recentChatsModel.setLastMsg(msgtext);
             recentChatsModel.setPhone(user2_number);
 
             recentChatsModel.setCombined_uid(msgUid);
@@ -243,6 +246,8 @@ public class ChatActivity extends AppCompatActivity {
             recentChatsModel.setUser1_pushid(user2_pushid);
             recentChatsModel.setUser2_pushid(user1_pushid);
             recentChatsModel.setPhone(user1_number);
+            recentChatsModel.setUser1_uid(user2_uid);
+            recentChatsModel.setUser2_uid(user1_uid);
             FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(user2_uid).child(user2_pushid).setValue(recentChatsModel);
 
         }
@@ -252,7 +257,6 @@ public class ChatActivity extends AppCompatActivity {
 
             recentChatsModel.setLastMsg(msgtext);
             recentChatsModel.setTimestamp(System.currentTimeMillis() / 1000);
-            recentChatsModel.setLastMsg(msgtext);
             recentChatsModel.setPhone(user2_number);
 
             recentChatsModel.setCombined_uid(msgUid);
@@ -268,6 +272,8 @@ public class ChatActivity extends AppCompatActivity {
             recentChatsModel.setUser1_pushid(push1);
             recentChatsModel.setUser2_pushid(push2);
             recentChatsModel.setPhone(user1_number);
+            recentChatsModel.setUser1_uid(user2_uid);
+            recentChatsModel.setUser2_uid(user1_uid);
             FirebaseDatabase.getInstance().getReference().child("RecentChatsModel").child(user2_uid).child(push2).setValue(recentChatsModel);
 
         }

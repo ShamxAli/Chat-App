@@ -1,4 +1,4 @@
-package com.startup.chatapp;
+package com.startup.chatapp.image_account;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,8 +8,6 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
@@ -17,10 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +26,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.startup.chatapp.R;
+import com.startup.chatapp.model.Upload;
 
 public class AccountActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 1001;
@@ -115,6 +113,7 @@ public class AccountActivity extends AppCompatActivity {
                         Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                         while (!urlTask.isSuccessful()) ;
                         Uri downloadUrl = urlTask.getResult();
+
                         String uploadId = upload.getKey();
                         String name = upload.getName();
                         Upload upload = new Upload(name, downloadUrl.toString());

@@ -1,12 +1,10 @@
-package com.startup.chatapp;
+package com.startup.chatapp.model;
 
 import java.io.Serializable;
 
 public class Upload implements Serializable {
 
     String name;
-
-
     String url;
 
 

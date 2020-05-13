@@ -7,9 +7,13 @@
     android:fitsSystemWindows="true"
     tools:context=".RecentChats">
 
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_recent"
         android:layout_width="match_parent"
+        tools:visibility="invisible"
+        android:visibility="invisible"
         android:layout_height="match_parent"
         tools:listitem="@layout/recycler_view_item" />
 
@@ -24,5 +28,19 @@
         android:backgroundTint="@color/colorAccent"
         android:onClick="fabClick"
         android:src="@drawable/ic_comment2" />
+
+    <TextView
+        android:id="@+id/tv_first_info"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:textSize="18sp"
+        android:layout_centerInParent="true"
+        android:minLines="2"
+        android:gravity="center"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:text="To start messanging contacts who have Chat App, tap the Message icon at the bottom of your screen" />
 
 </RelativeLayout>

@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,7 +40,7 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     RecyclerView recyclerView;
     RecentAdapter recentAdapter;
     Context context;
-    boolean chkRunning;
+    TextView tvFirstInfo;
 
     ArrayList<ContactsModel> arrayList = new ArrayList<>();
     ArrayList<RecentChatsModel> recentChatsArrayList = new ArrayList<>();
@@ -53,7 +54,6 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
         context = this;
         initViews();
         Log.d("TAGTAG", "onCreate: called");
-        chkRunning = true;
 
         // Read contacts
         readContacts();
@@ -65,7 +65,9 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
 
         //----------------------------------------------------------------------------------
         // REGISTER LISTENER
-        FirebaseDatabase.getInstance().getReference("RecentChatsModel").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(mListener);
+        FirebaseDatabase.getInstance().getReference("RecentChatsModel").
+                child(FirebaseAuth.getInstance().
+                        getCurrentUser().getUid()).addValueEventListener(mListener);
 
 
         LinkedHashSet<RecentChatsModel> hashSet = new LinkedHashSet<>(recentChatsArrayList);
@@ -83,11 +85,13 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
                 Log.d("TAGTAG", "onDataChange: added called");
                 // Clearing the list..
                 recentChatsArrayList.clear();
+                if (dataSnapshot != null) {
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
                 // ...
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
 
                     RecentChatsModel recentChatsModel = child.getValue(RecentChatsModel.class);
-                    Log.d("MyError", "onDataChange: " + recentChatsModel.getPhone());
 
                     // comparing number numbers
 
@@ -95,6 +99,7 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
                         if (recentChatsModel.getPhone().equals(contactsModel.getContactNumber())) {
                             recentChatsModel.setName(contactsModel.getContactName());
                             recentChatsArrayList.add(recentChatsModel);
+                            tvFirstInfo.setVisibility(View.INVISIBLE);
                         }
                     }
                     recentAdapter.notifyDataSetChanged();
@@ -133,6 +138,7 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     private void initViews() {
         fab = findViewById(R.id.fab);
         recyclerView = findViewById(R.id.recyclerview_recent);
+        tvFirstInfo = findViewById(R.id.tv_first_info);
     }
 
     // Fab icon click...
@@ -219,7 +225,7 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (grantResults.length > 0 & grantResults[0]== PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.length > 0 & grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, "Permission not granted", Toast.LENGTH_SHORT).show();
