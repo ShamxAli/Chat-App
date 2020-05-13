@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.It
 
         searchMethod();
 
-
-//        FirebaseDatabase.getInstance().getReference("Users").keepSynced(true);
+        // enable offline capability...
+        FirebaseDatabase.getInstance().getReference("Users").keepSynced(true);
 
 
     }

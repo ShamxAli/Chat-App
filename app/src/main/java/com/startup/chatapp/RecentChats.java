@@ -26,6 +26,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.startup.chatapp.adapters.RecentAdapter;
 import com.startup.chatapp.chat.ChatActivity;
 import com.startup.chatapp.model.ContactsModel;
@@ -58,8 +59,15 @@ public class RecentChats extends AppCompatActivity implements RecentAdapter.OnIt
         // Read contacts
         readContacts();
 
-        // Observing chats with LISTENER...
 
+        // Offline capability...
+        FirebaseDatabase.getInstance().getReference("RecentChatsModel").
+                child(FirebaseAuth.getInstance().
+                        getCurrentUser().getUid())
+                .keepSynced(true);
+
+
+        // Observing chats with LISTENER...
         observingRecentChats();
 
 

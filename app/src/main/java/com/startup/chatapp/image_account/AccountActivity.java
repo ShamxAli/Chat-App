@@ -47,6 +47,8 @@ public class AccountActivity extends AppCompatActivity {
 
 
         mRef = FirebaseDatabase.getInstance().getReference("uploads");
+
+        mRef.keepSynced(true); // offline name and number
         mListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
