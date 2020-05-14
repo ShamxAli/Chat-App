@@ -39,6 +39,7 @@
         android:layout_marginStart="96dp"
         android:layout_marginTop="96dp"
         android:src="@color/colorPrimary"
+
         app:civ_border_color="#FF000000"
         app:layout_constraintStart_toStartOf="@+id/account_img"
         app:layout_constraintTop_toTopOf="@+id/account_img" />

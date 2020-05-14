@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -47,6 +48,7 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
     RecentAdapter recentAdapter;
     Context context;
     TextView tvFirstInfo;
+    ViewPager viewPager;
 
     ArrayList<ContactsModel> arrayList = new ArrayList<>();
     ArrayList<RecentChatsModel> recentChatsArrayList = new ArrayList<>();
@@ -57,6 +59,9 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
 
     }
 
+    public void setViewPager(ViewPager viewPager) {
+        this.viewPager = viewPager;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -240,16 +245,9 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.fab) {
-            Toast.makeText(getActivity(), "hello", Toast.LENGTH_SHORT).show();
-            Fragment fragment = new ContactsFragment();
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.content_frame, fragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+            ((HomeActivity) getActivity()).setCurrentItem(1, true);
         }
     }
     // *****
-
 
 }
