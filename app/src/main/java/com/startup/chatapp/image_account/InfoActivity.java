@@ -21,8 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.startup.chatapp.HomeActivity;
 import com.startup.chatapp.R;
-import com.startup.chatapp.activities.RecentChats;
 import com.startup.chatapp.model.Upload;
 
 public class InfoActivity extends AppCompatActivity {
@@ -86,17 +86,16 @@ public class InfoActivity extends AppCompatActivity {
 
                                 Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
 
-                                while (!urlTask.isSuccessful());
+                                while (!urlTask.isSuccessful()) ;
 
-                                    Uri downloadUrl = urlTask.getResult();
-                                    Log.d("TAGTAG", "onSuccess: url is : " + downloadUrl);
+                                Uri downloadUrl = urlTask.getResult();
+                                Log.d("TAGTAG", "onSuccess: url is : " + downloadUrl);
 
-                                    Upload upload = new Upload(editText.getText().toString().trim(), downloadUrl.toString());
+                                Upload upload = new Upload(editText.getText().toString().trim(), downloadUrl.toString());
 
-                                    String uploadId = mRef.push().getKey();
-                                    mRef.child(uploadId).setValue(upload);
-                                }
-
+                                String uploadId = mRef.push().getKey();
+                                mRef.child(uploadId).setValue(upload);
+                            }
 
 
                         });
@@ -110,8 +109,9 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     public void nextClick(View view) {
-        Intent intent = new Intent(InfoActivity.this, RecentChats.class);
+        Intent intent = new Intent(InfoActivity.this, HomeActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void showToast(String msg) {

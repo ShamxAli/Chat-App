@@ -14,8 +14,9 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.startup.chatapp.HomeActivity;
 import com.startup.chatapp.R;
-import com.startup.chatapp.activities.RecentChats;
+
 import com.startup.chatapp.phoneauthentication.PhoneLoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -35,7 +36,7 @@ public class SplashActivity extends AppCompatActivity {
                     startActivity(new Intent(SplashActivity.this, PhoneLoginActivity.class));
                     finish();
                 } else {
-                    startActivity(new Intent(SplashActivity.this, RecentChats.class));
+                    startActivity(new Intent(SplashActivity.this, HomeActivity.class));
                     finish();
                 }
             }

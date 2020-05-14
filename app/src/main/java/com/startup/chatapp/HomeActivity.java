@@ -1,14 +1,15 @@
 package com.startup.chatapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.view.KeyEvent;
 
 import com.google.android.material.tabs.TabLayout;
 import com.startup.chatapp.adapters.ViewPagerAdapter;
+import com.startup.chatapp.fragments.AccountFragment;
+import com.startup.chatapp.fragments.ChatFragment;
+import com.startup.chatapp.fragments.ContactsFragment;
 
 public class HomeActivity extends AppCompatActivity {
     ViewPager viewPager;
@@ -38,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    public void setCurrentItem (int item, boolean smoothScroll) {
+    public void setCurrentItem(int item, boolean smoothScroll) {
         viewPager.setCurrentItem(item, smoothScroll);
     }
 }

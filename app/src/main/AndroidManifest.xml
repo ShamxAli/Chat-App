@@ -15,14 +15,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".HomeActivity">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
-        <activity android:name=".image_account.AccountActivity" />
         <activity android:name=".image_account.InfoActivity" />
         <activity android:name=".activities.RecentChats" />
         <activity
@@ -30,6 +24,11 @@
             android:parentActivityName=".activities.RecentChats" />
         <activity android:name=".activities.MainActivity" />
         <activity android:name=".splash.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
         <activity android:name=".phoneauthentication.VerificationActivity" />

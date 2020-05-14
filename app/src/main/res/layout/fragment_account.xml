@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".AccountFragment">
+    tools:context=".fragments.AccountFragment">
     
 
     <ProgressBar
@@ -16,13 +16,12 @@
         app:layout_constraintBottom_toBottomOf="@+id/account_img"
         app:layout_constraintEnd_toEndOf="@+id/account_img"
         app:layout_constraintStart_toStartOf="@+id/account_img"
-        app:layout_constraintTop_toBottomOf="@+id/edit_toolbar" />
+       />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/account_img"
         android:layout_width="136dp"
         android:layout_height="136dp"
-        android:onClick="updateImage"
         android:src="@drawable/profi"
         app:civ_border_color="#FF000000"
         app:layout_constraintBottom_toBottomOf="parent"

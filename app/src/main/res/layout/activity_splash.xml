@@ -27,7 +27,7 @@
             android:layout_centerInParent="true"
             android:layout_centerHorizontal="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_interface" />
+            android:src="@drawable/ic_chat_bubble_outline_black_24dp" />
 
         <TextView
             android:layout_width="wrap_content"
