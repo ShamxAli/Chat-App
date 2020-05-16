@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 
 import com.google.android.material.tabs.TabLayout;
 import com.startup.chatapp.adapters.ViewPagerAdapter;
@@ -41,5 +42,19 @@ public class HomeActivity extends AppCompatActivity {
 
     public void setCurrentItem(int item, boolean smoothScroll) {
         viewPager.setCurrentItem(item, smoothScroll);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (viewPager.getCurrentItem() == 2) {
+            viewPager.setCurrentItem(0, true);
+        } else if (viewPager.getCurrentItem() == 1) {
+            viewPager.setCurrentItem(0, true);
+        }
+        else {
+            return super.onKeyDown(keyCode, event);
+        }
+        return true;
     }
 }

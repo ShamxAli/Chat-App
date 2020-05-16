@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.startup.chatapp.HomeActivity;
 import com.startup.chatapp.R;
 import com.startup.chatapp.adapters.MessageAdapter;
 import com.startup.chatapp.model.RecentChatsModel;
@@ -42,6 +44,10 @@ public class ChatActivity extends AppCompatActivity {
 
     String user1_pushid, user2_pushid;
 
+    // ============== FOR BACK STACK ===================
+
+    Intent intent;
+
     // arraylist
     List<MessageModelClass> msgList = new ArrayList<>();
 
@@ -50,6 +56,7 @@ public class ChatActivity extends AppCompatActivity {
     RecentChatsModel recentChatsModel;
     // coming from recentchats
     RecentChatsModel intentObj;
+
 
     // onStart()...
     @Override
@@ -289,4 +296,10 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
+    // When user(FROM CONTACTS Fragment) back press directly goes to Chats Fragment
+    @Override
+    public void onBackPressed() {
+        setResult(9, getIntent());
+        finish();
+    }
 }

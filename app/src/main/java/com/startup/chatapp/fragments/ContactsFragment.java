@@ -2,6 +2,7 @@ package com.startup.chatapp.fragments;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.Session2Command;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -24,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.startup.chatapp.HomeActivity;
 import com.startup.chatapp.R;
 import com.startup.chatapp.adapters.ContactAdapter;
 import com.startup.chatapp.chat.ChatActivity;
@@ -215,8 +217,20 @@ public class ContactsFragment extends Fragment implements ContactAdapter.ItemOnC
         intent.putExtra("user2_uid", user2_uid);
         intent.putExtra("user2_number", contactList.get(position).getContactNumber());
         intent.putExtra("key", "ContactActivity");
-        startActivity(intent);
+
+        // === For activity result ===
+        startActivityForResult(intent, 2002);
 //        }
     }
 
+
+
+    // --- When user comes back directly goes to Chats Fragment ---
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2002 && resultCode == 9) {
+            ((HomeActivity) getActivity()).setCurrentItem(0, false);
+        }
+    }
 }
