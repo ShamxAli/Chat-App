@@ -48,7 +48,7 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     MessageAdapter messageAdapter;
     // Global variables
-   public static String user1_number;
+    public static String user1_number;
     public static String user2_number;
     String comingFrom;
     // to store...
@@ -92,14 +92,12 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void getUser() {
-        FirebaseDatabase.getInstance().getReference("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("Users").child(user1_uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot childsnapshot : dataSnapshot.getChildren()) {
-                    Person value = childsnapshot.getValue(Person.class);
-                    token = value.getToken();
-                    title = value.getPhoneNumber();
-                }
+                Person value = dataSnapshot.getValue(Person.class);
+                token = value.getToken();
+                title = user1_number;
             }
 
             @Override
@@ -363,7 +361,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
         jsonObject1.put("to", token);
-        jsonObject1.put("collapse_key", "type_a");
+//        jsonObject1.put("collapse_key", "type_a");
         jsonObject1.put("notification", jsonObject2);
         jsonObject1.put("data", jsonObject3);
 

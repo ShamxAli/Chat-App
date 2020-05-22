@@ -21,6 +21,8 @@ import com.startup.chatapp.chat.ChatActivity;
 public class MyFirebaseCloudMessangingService extends FirebaseMessagingService {
 
 
+    public static final String TAG = "TAG";
+
     public MyFirebaseCloudMessangingService() {
     }
 
@@ -29,14 +31,19 @@ public class MyFirebaseCloudMessangingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         createNotificationChannel();
+        // inside the chat activity
         if (ChatActivity.flag) {
-            if (remoteMessage.getData().get("number").equals(ChatActivity.user1_number)) {
+            if (remoteMessage.getData().get("number").equals(ChatActivity.user2_number)) {
 
-            }else {
+            } else {
+                Log.d(TAG, "onMessageReceived: asdfasdfasdf");
                 displayNotification(getApplicationContext(), remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
             }
-        } else {
+        }
 
+        // outside the chat activity...
+        else {
+            displayNotification(getApplicationContext(), remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
         }
     }
 
@@ -69,6 +76,8 @@ public class MyFirebaseCloudMessangingService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setContentText(body)
+                .setAutoCancel(false)
+                .setOngoing(false)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.notify(1, mBuilder.build());
