@@ -32,7 +32,7 @@ public class HomeActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.view_pager);
         TabLayout tabs = findViewById(R.id.tabs);
 
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(3); // todo
         viewPager.setAdapter(viewPagerAdapter);
         tabs.setupWithViewPager(viewPager);
 
@@ -40,9 +40,22 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+
     public void setCurrentItem(int item, boolean smoothScroll) {
         viewPager.setCurrentItem(item, smoothScroll);
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

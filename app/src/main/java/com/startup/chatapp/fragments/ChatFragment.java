@@ -104,6 +104,15 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
     }
 
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        FirebaseDatabase.getInstance().getReference("RecentChatsModel").
+                child(FirebaseAuth.getInstance().
+                        getCurrentUser().getUid()).removeEventListener(mListener);
+    }
+
     private void observingRecentChats() {
         // VALUE EVENT LISTENER----------------------------------------------------------------------------------
         mListener = new ValueEventListener() {
@@ -167,7 +176,7 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
         // Permission checking...
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //            isAllowed();
-//        }
+//        }.
 
 
         // Reading...
@@ -247,5 +256,4 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
         }
     }
     // *****
-
 }

@@ -6,14 +6,26 @@ public class Person {
     private String uid;
     private String phoneNumber;
 
+    public Person(String uid, String phoneNumber, String token) {
+        this.uid = uid;
+        this.phoneNumber = phoneNumber;
+        this.token = token;
+    }
+
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public Person() {
     }
 
-    public Person(String uid, String phoneNumber) {
 
-        this.uid = uid;
-        this.phoneNumber = phoneNumber;
-    }
 
     public String getUid() {
         return uid;

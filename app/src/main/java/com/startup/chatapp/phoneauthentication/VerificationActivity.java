@@ -22,6 +22,8 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.startup.chatapp.image_account.InfoActivity;
 import com.startup.chatapp.model.Person;
 import com.startup.chatapp.R;
@@ -41,7 +43,7 @@ public class VerificationActivity extends AppCompatActivity {
     DatabaseReference mRef;
 
     // Global
-    private String number, id;
+    private String number, id, token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class VerificationActivity extends AppCompatActivity {
 
 
         sendVerificationCode();
+        generateToken();
 
     }
 
@@ -126,6 +129,18 @@ public class VerificationActivity extends AppCompatActivity {
 
     }
 
+    public void generateToken() {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (task.isSuccessful()) {
+
+                    token = task.getResult().getToken();
+                }
+            }
+        });
+    }
+
     /*Verify and store data...*/
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
@@ -135,7 +150,7 @@ public class VerificationActivity extends AppCompatActivity {
                         loader.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
 
-                            Person person = new Person(mAuth.getUid(), number);
+                            Person person = new Person(mAuth.getUid(), number, token);
                             Log.d("lol", "onComplete: " + person.getUid() + " " + person.getPhoneNumber());
                             mRef.child(person.getUid()).setValue(person);
 
