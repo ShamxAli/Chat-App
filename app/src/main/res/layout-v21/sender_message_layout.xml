@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
@@ -12,23 +13,25 @@
         android:id="@+id/showmsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:background="@drawable/msg_send_corners"
         android:elevation="2dp"
-        android:padding="10dp"
+        android:padding="9dp"
         android:text="Placeholder message"
         android:textColor="#fff"
-        android:textSize="18dp" />
+        android:textSize="17sp" />
 
     <TextView
         android:id="@+id/datetime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
         android:layout_below="@id/showmsg"
-        android:layout_alignRight="@id/showmsg"
-        android:layout_marginRight="6dp"
-        android:text="abc" />
+        android:layout_marginBottom="-5dp"
+        android:layout_alignEnd="@id/showmsg"
+        android:layout_marginEnd="6dp"
+        android:text="abc"
+        android:textSize="11sp"
+        tools:ignore="SmallSp" />
 
 
 </RelativeLayout>

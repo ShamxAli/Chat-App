@@ -129,6 +129,7 @@ public class VerificationActivity extends AppCompatActivity {
 
     }
 
+    // generate token for notifications
     public void generateToken() {
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override

@@ -1,5 +1,6 @@
 package com.startup.chatapp.service;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,20 +19,30 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.startup.chatapp.R;
 import com.startup.chatapp.chat.ChatActivity;
 
-public class MyFirebaseCloudMessangingService extends FirebaseMessagingService {
 
+public class MyFCMService extends FirebaseMessagingService {
 
-    public static final String TAG = "TAG";
+    public static final String TAG = "MyFCMService";
 
-    public MyFirebaseCloudMessangingService() {
+    // Constructor ...
+    public MyFCMService() {
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
+    /* ==================== RemoteMessage Method ... ==================== */
+
+
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        createNotificationChannel();
+        // Create notification channel if API > Oreo
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel();
+        }
+        /* --- Logic for receiving notification in different scenarios*/
         // inside the chat activity
+
+        // if user is in the chat activity
         if (ChatActivity.flag) {
             if (remoteMessage.getData().get("number").equals(ChatActivity.user2_number)) {
 
@@ -41,12 +52,14 @@ public class MyFirebaseCloudMessangingService extends FirebaseMessagingService {
             }
         }
 
-        // outside the chat activity...
+        // if user is outside the chat activity
         else {
             displayNotification(getApplicationContext(), remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
         }
     }
 
+
+    /* ==================== Notification Channel ==================== */
     private String CHANNEL_NAME = "High Priority Channel";
     private String CHANNEL_ID = "com.startup.notificationexample" + CHANNEL_NAME;
 
@@ -63,11 +76,12 @@ public class MyFirebaseCloudMessangingService extends FirebaseMessagingService {
         notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
 
         // Create the channel
-
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.createNotificationChannel(notificationChannel);
     }
 
+
+    /* ==================== Display Notification ==================== */
 
     public void displayNotification(Context context, String title, String body) {
         Log.d("notifyme", "displayNotification: " + title + "   " + body);

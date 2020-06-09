@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
@@ -7,44 +8,24 @@
     android:paddingLeft="15dp"
     android:paddingRight="60dp">
 
-    <View
-        android:id="@+id/avatar"
-        android:layout_width="34dp"
-        android:layout_height="34dp"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/round_avatar"
-        android:scaleType="centerInside" />
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/avatar"
-        android:layout_marginStart="15dp"
-        android:layout_toEndOf="@+id/avatar"
-        android:paddingBottom="4dp"
-        android:text="Rose" />
-
     <TextView
         android:id="@+id/showmsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/name"
-        android:layout_alignStart="@+id/name"
         android:background="@drawable/msg_receive_corners"
         android:elevation="2dp"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp"
+        android:padding="9dp"
         android:text="How are you doing? This is a long message that should probably wrap."
-        android:textSize="18dp" />
+        android:textSize="17sp" />
 
     <TextView
         android:id="@+id/datetime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/showmsg"
-        android:layout_alignLeft="@id/showmsg"
+        android:layout_alignStart="@id/showmsg"
         android:layout_marginStart="6dp"
         android:text="abc"
-        android:textSize="12sp" />
+        android:textSize="11sp"
+        tools:ignore="SmallSp" />
 </RelativeLayout>

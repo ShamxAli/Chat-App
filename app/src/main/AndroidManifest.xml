@@ -22,6 +22,7 @@
 
         <activity
             android:name=".chat.ChatActivity"
+            android:windowSoftInputMode="adjustResize"
         />
         <activity android:name=".splash.SplashActivity">
             <intent-filter>
@@ -35,7 +36,7 @@
         <activity android:name=".phoneauthentication.PhoneLoginActivity" />
 
         <service
-            android:name=".service.MyFirebaseCloudMessangingService"
+            android:name=".service.MyFCMService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

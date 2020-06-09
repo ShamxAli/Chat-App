@@ -4,10 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBlack"
-    android:backgroundTint="@color/colorBlack"
+    android:background="@drawable/one"
     android:fitsSystemWindows="true"
     tools:context=".chat.ChatActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.9"
+        android:background="@color/colorBlack" />
 
 
     <!--    <include-->
@@ -76,7 +81,8 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_arrow_back_black_24dp" />
+                android:background="@drawable/ic_arrow_back_black_24dp"
+              />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/ca_profile_image"

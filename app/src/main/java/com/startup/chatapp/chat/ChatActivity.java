@@ -2,15 +2,17 @@ package com.startup.chatapp.chat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -25,7 +27,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.startup.chatapp.HomeActivity;
 import com.startup.chatapp.R;
 import com.startup.chatapp.adapters.MessageAdapter;
 import com.startup.chatapp.model.Person;
@@ -39,11 +40,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ChatActivity extends AppCompatActivity {
 
     // Widgets
     EditText text;
+    View backView;
     // Recycler View
     RecyclerView recyclerView;
     MessageAdapter messageAdapter;
@@ -56,14 +59,12 @@ public class ChatActivity extends AppCompatActivity {
     String user2_uid;
     String push;
     String user1_uid;
-    String title, token, body, number;
-    public static final String CHANNEL_ID = "5146";
+    String title, token;
 
     String user1_pushid, user2_pushid;
 
     // ============== FOR BACK STACK ===================
 
-    Intent intent;
 
     // arraylist
     List<MessageModelClass> msgList = new ArrayList<>();
@@ -73,7 +74,7 @@ public class ChatActivity extends AppCompatActivity {
     RecentChatsModel recentChatsModel;
     // coming from recentchats
     RecentChatsModel intentObj;
-    private String url = "https://fcm.googleapis.com/fcm/send";
+    private String fcmUrl = "https://fcm.googleapis.com/fcm/send";
     public static boolean flag = false;
 
     // onStart()...
@@ -81,17 +82,17 @@ public class ChatActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         checkIfRecentChatAlreadyExist();
-        getUser();
-        flag = true;
+        getUserToken(); // get user token for notifications ...
+        flag = true; // flag for notifications ...
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        flag = false;
+        flag = false; // for notifications
     }
 
-    public void getUser() {
+    public void getUserToken() {
         FirebaseDatabase.getInstance().getReference("Users").child(user1_uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -113,7 +114,15 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
         initViews();
+
+        backView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         // if coming from Contacts activity
         user1_uid = FirebaseAuth.getInstance().getUid();
@@ -222,6 +231,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         messageModelClass = new MessageModelClass();
         recentChatsModel = new RecentChatsModel();
+        backView = findViewById(R.id.back_press_img);
     }
 
 
@@ -346,29 +356,30 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
+
+    /*   ==========   Send Notification when send message   ==========*/
+
     public void sendNotifications(String title, String body, String token) throws JSONException {
-        JSONObject jsonObject1 = new JSONObject();
-        JSONObject jsonObject2 = new JSONObject();
-        JSONObject jsonObject3 = new JSONObject();
-
-        Log.d("notifyme", "sendNotifications: " + title + " " + body + " " + token);
+        JSONObject jsonObject1 = new JSONObject(); // wrapper
+        JSONObject jsonObject2 = new JSONObject(); // notification
+        JSONObject jsonObject3 = new JSONObject(); // data
 
 
-        jsonObject2.put("body", body);
+        jsonObject2.put("body", body); // notification
         jsonObject2.put("title", title);
 
-        jsonObject3.put("number", user1_number);
+        jsonObject3.put("number", user1_number); // data
 
 
         jsonObject1.put("to", token);
-//        jsonObject1.put("collapse_key", "type_a");
+        jsonObject1.put("collapse_key", "type_a"); // wrapper 4...
         jsonObject1.put("notification", jsonObject2);
         jsonObject1.put("data", jsonObject3);
 
 
         RequestQueue queue = Volley.newRequestQueue(ChatActivity.this);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject1, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, fcmUrl, jsonObject1, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
@@ -390,5 +401,10 @@ public class ChatActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest);
         jsonObjectRequest.setShouldCache(false);
     }
+
+    /* =========== show text and image ============== */
+
+    // todo ...
+
 
 }
