@@ -217,12 +217,12 @@ public class ContactsFragment extends Fragment implements ContactAdapter.ItemOnC
         intent.putExtra("user2_uid", user2_uid);
         intent.putExtra("user2_number", contactList.get(position).getContactNumber());
         intent.putExtra("key", "ContactActivity");
+        intent.putExtra("user2_name", contactList.get(position).getContactName());
 
         // === For activity result ===
         startActivityForResult(intent, 2002);
 //        }
     }
-
 
 
     // --- When user comes back directly goes to Chats Fragment ---

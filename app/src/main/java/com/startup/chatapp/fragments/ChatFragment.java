@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -38,9 +39,11 @@ import com.startup.chatapp.adapters.RecentAdapter;
 import com.startup.chatapp.chat.ChatActivity;
 import com.startup.chatapp.model.ContactsModel;
 import com.startup.chatapp.model.RecentChatsModel;
+import com.startup.chatapp.model.Upload;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 
 public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick, View.OnClickListener {
@@ -83,26 +86,23 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
                 .keepSynced(true);
 
 
+        return view;
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         // Observing chats with LISTENER...
         observingRecentChats();
-
 
         //----------------------------------------------------------------------------------
         // REGISTER LISTENER
         FirebaseDatabase.getInstance().getReference("RecentChatsModel").
                 child(FirebaseAuth.getInstance().
                         getCurrentUser().getUid()).addValueEventListener(mListener);
-
-
-        LinkedHashSet<RecentChatsModel> hashSet = new LinkedHashSet<>(recentChatsArrayList);
-        recentChatsArrayList.clear();
-        recentChatsArrayList = new ArrayList<>(hashSet);
-        bakeRecyclerView(recentChatsArrayList);
-
-
-        return view;
     }
-
 
     @Override
     public void onDestroy() {
@@ -137,8 +137,9 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
                             tvFirstInfo.setVisibility(View.INVISIBLE);
                         }
                     }
-                    recentAdapter.notifyDataSetChanged();
+                 //   recentAdapter.notifyDataSetChanged();
                 }
+                getImgUrl();
             }
 
 
@@ -163,6 +164,7 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
 
     // bake recyclerView
     private void bakeRecyclerView(ArrayList<RecentChatsModel> recentChatsModels) {
+        context=getActivity();
         recentAdapter = new RecentAdapter(context, recentChatsModels, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recentAdapter);
@@ -221,8 +223,46 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
         Log.d("duplicate", "readContacts: " + arrayList.size());
 
     }
-    // *****
 
+    List<Upload> uploadList = new ArrayList<>();
+
+    // *****
+    public void getImgUrl() {
+        uploadList.clear();
+        FirebaseDatabase.getInstance().getReference().child("uploads").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    Upload upload = child.getValue(Upload.class);
+                    upload.setUid(child.getKey());
+                    uploadList.add(upload);
+                }
+
+                Log.d("TAGLOL", "onDataChange: kndknk");
+                for (int i = 0; i < uploadList.size(); i++) {
+                    Log.d("TAGLOL", "onDataChange: "+uploadList.get(i).getUid());
+                    for (int j=0;j<recentChatsArrayList.size();j++) {
+
+                        if (recentChatsArrayList.get(j).getUser2_uid().equals(uploadList.get(i).getUid())) {
+                            recentChatsArrayList.get(j).setImg_url(uploadList.get(i).getUrl());
+                            Log.d("TAGLOL", "onDataChange: "+recentChatsArrayList.get(j).getName()+recentChatsArrayList.get(j).getImg_url());
+                        }
+                    }
+                }
+                LinkedHashSet<RecentChatsModel> hashSet = new LinkedHashSet<>(recentChatsArrayList);
+                recentChatsArrayList.clear();
+                recentChatsArrayList = new ArrayList<>(hashSet);
+                Log.d("TAGTAG", "onActivityCreated: "+recentChatsArrayList.get(0).getImg_url());
+                bakeRecyclerView(recentChatsArrayList);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     /*Permissions ============================*/
 

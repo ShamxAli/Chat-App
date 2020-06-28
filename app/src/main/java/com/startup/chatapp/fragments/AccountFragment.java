@@ -135,11 +135,10 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                         Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                         while (!urlTask.isSuccessful()) ;
                         Uri downloadUrl = urlTask.getResult();
-
-                        String uploadId = upload.getKey();
+                        
                         String name = upload.getName();
                         Upload upload = new Upload(name, downloadUrl.toString());
-                        mRef.child(uploadId).setValue(upload);
+                        mRef.setValue(upload);
                     }
 
                 });

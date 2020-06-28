@@ -12,7 +12,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -21,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +35,7 @@ import com.startup.chatapp.adapters.MessageAdapter;
 import com.startup.chatapp.model.Person;
 import com.startup.chatapp.model.RecentChatsModel;
 import com.startup.chatapp.model.MessageModelClass;
+import com.startup.chatapp.model.Upload;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +51,9 @@ public class ChatActivity extends AppCompatActivity {
     // Widgets
     EditText text;
     View backView;
+    // Toolbar name and image
+    TextView textView;
+    ImageView imageView;
     // Recycler View
     RecyclerView recyclerView;
     MessageAdapter messageAdapter;
@@ -60,6 +67,7 @@ public class ChatActivity extends AppCompatActivity {
     String push;
     String user1_uid;
     String title, token;
+    String user2_name;
 
     String user1_pushid, user2_pushid;
 
@@ -131,6 +139,7 @@ public class ChatActivity extends AppCompatActivity {
             msgUid = getIntent().getStringExtra("msgUid");
             user2_uid = getIntent().getStringExtra("user2_uid");
             user2_number = getIntent().getStringExtra("user2_number");
+            user2_name = getIntent().getStringExtra("user2_name");
         }
 
         // if coming from recent chats
@@ -139,6 +148,7 @@ public class ChatActivity extends AppCompatActivity {
             msgUid = intentObj.getCombined_uid();
             user2_uid = intentObj.getUser2_uid();
             user2_number = intentObj.getPhone();
+            user2_name = intentObj.getName();
         }
 
 
@@ -154,6 +164,23 @@ public class ChatActivity extends AppCompatActivity {
 
         // Get all messages in onCreate();
         getLiveMessagesFromFirebaseDatabase();
+
+
+        // Get image and name in chat
+
+        FirebaseDatabase.getInstance().getReference("uploads").child(user2_uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Upload upload = dataSnapshot.getValue(Upload.class);
+                textView.setText(user2_name);
+                Glide.with(ChatActivity.this).load(upload.getUrl()).centerCrop().into(imageView);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
@@ -232,6 +259,9 @@ public class ChatActivity extends AppCompatActivity {
         messageModelClass = new MessageModelClass();
         recentChatsModel = new RecentChatsModel();
         backView = findViewById(R.id.back_press_img);
+        textView = findViewById(R.id.ca_user_name);
+        imageView = findViewById(R.id.ca_profile_image);
+
     }
 
 

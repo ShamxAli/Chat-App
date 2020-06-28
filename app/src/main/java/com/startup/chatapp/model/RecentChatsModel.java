@@ -12,6 +12,29 @@ public class RecentChatsModel implements Serializable {
     private String combined_uid;
     private String user1_uid;
     private String user2_uid;
+    private String img_url;
+
+    public String getImg_url() {
+        return img_url;
+    }
+
+    public void setImg_url(String img_url) {
+        this.img_url = img_url;
+    }
+
+    public RecentChatsModel(String lastMsg, long timestamp, String phone, String name, String combined_uid, String user1_uid, String user2_uid, String img_url, String user1_pushid, String user2_pushid) {
+        this.lastMsg = lastMsg;
+        this.timestamp = timestamp;
+        this.phone = phone;
+        this.name = name;
+        this.combined_uid = combined_uid;
+        this.user1_uid = user1_uid;
+        this.user2_uid = user2_uid;
+        this.img_url = img_url;
+        this.user1_pushid = user1_pushid;
+        this.user2_pushid = user2_pushid;
+    }
+
     private String user1_pushid;
     private String user2_pushid;
 
