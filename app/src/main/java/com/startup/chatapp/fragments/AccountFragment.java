@@ -65,23 +65,20 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
 
 
-        mRef = FirebaseDatabase.getInstance().getReference("uploads");
+        mRef = FirebaseDatabase.getInstance().getReference("uploads").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         mRef.keepSynced(true); // offline name and number
         mListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-                    upload = snapshot.getValue(Upload.class);
-                    upload.setKey(snapshot.getKey());
-                    name.setText(upload.getName());
-                    number.setText(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
-                    Glide.with(getActivity()).load(upload.getUrl()).into(imageView);
-                }
-
+                upload = dataSnapshot.getValue(Upload.class);
+                upload.setKey(dataSnapshot.getKey());
+                name.setText(upload.getName());
+                number.setText(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
+                Glide.with(getActivity()).load(upload.getUrl()).into(imageView);
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
