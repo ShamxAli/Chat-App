@@ -219,6 +219,7 @@ public class ContactsFragment extends Fragment implements ContactAdapter.ItemOnC
         intent.putExtra("key", "ContactActivity");
         intent.putExtra("user2_name", contactList.get(position).getContactName());
 
+
         // === For activity result ===
         startActivityForResult(intent, 2002);
 //        }

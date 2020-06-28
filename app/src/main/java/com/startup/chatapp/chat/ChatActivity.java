@@ -173,7 +173,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Upload upload = dataSnapshot.getValue(Upload.class);
                 textView.setText(user2_name);
-                Glide.with(ChatActivity.this).load(upload.getUrl()).centerCrop().into(imageView);
+                Glide.with(getApplicationContext()).load(upload.getUrl()).centerCrop().into(imageView);
             }
 
             @Override
