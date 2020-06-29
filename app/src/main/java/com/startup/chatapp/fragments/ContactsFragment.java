@@ -31,9 +31,12 @@ import com.startup.chatapp.adapters.ContactAdapter;
 import com.startup.chatapp.chat.ChatActivity;
 import com.startup.chatapp.model.ContactsModel;
 import com.startup.chatapp.model.Person;
+import com.startup.chatapp.model.RecentChatsModel;
+import com.startup.chatapp.model.Upload;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 public class ContactsFragment extends Fragment implements ContactAdapter.ItemOnClickListener {
 
@@ -125,6 +128,41 @@ public class ContactsFragment extends Fragment implements ContactAdapter.ItemOnC
         getAllUsersFromFirebase();
     }
 
+    List<Upload> uploadList = new ArrayList<>();
+
+    // *****
+    public void getImgUrl() {
+        uploadList.clear();
+        FirebaseDatabase.getInstance().getReference().child("uploads").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    Upload upload = child.getValue(Upload.class);
+                    upload.setUid(child.getKey());
+                    uploadList.add(upload);
+                }
+
+                for (int i = 0; i < uploadList.size(); i++) {
+                    for (int j = 0; j < contactList.size(); j++) {
+
+                        if (contactList.get(j).getUid().equals(uploadList.get(i).getUid())) {
+                            contactList.get(j).setUrl(uploadList.get(i).getUrl());
+                        }
+                    }
+                }
+                LinkedHashSet<ContactsModel> hashSet = new LinkedHashSet<>(contactList);
+                contactList.clear();
+                contactList = new ArrayList<>(hashSet);
+                bakeRecyclerView(contactList);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     /*Compare firebase contacts with local contacts and add to list*/
     ArrayList<ContactsModel> contactList = new ArrayList<>();
@@ -146,8 +184,7 @@ public class ContactsFragment extends Fragment implements ContactAdapter.ItemOnC
                 LinkedHashSet<ContactsModel> hashSet = new LinkedHashSet<>(contactList);
                 contactList.clear();
                 contactList = new ArrayList<>(hashSet);
-
-                bakeRecyclerView(contactList);
+                getImgUrl();
             }
 
             @Override
