@@ -1,10 +1,12 @@
 package com.startup.chatapp.fragments;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -24,26 +26,39 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.startup.chatapp.HomeActivity;
 import com.startup.chatapp.R;
 import com.startup.chatapp.adapters.RecentAdapter;
 import com.startup.chatapp.chat.ChatActivity;
 import com.startup.chatapp.model.ContactsModel;
+import com.startup.chatapp.model.MessageModelClass;
 import com.startup.chatapp.model.RecentChatsModel;
 import com.startup.chatapp.model.Upload;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
+import static com.startup.chatapp.image_account.InfoActivity.REQUEST_CODE;
 
 
 public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick, View.OnClickListener {
@@ -53,8 +68,6 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
     RecentAdapter recentAdapter;
     Context context;
     TextView tvFirstInfo;
-    ViewPager viewPager;
-
     ArrayList<ContactsModel> arrayList = new ArrayList<>();
     ArrayList<RecentChatsModel> recentChatsArrayList = new ArrayList<>();
     ValueEventListener mListener;
@@ -71,9 +84,11 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
         fab = view.findViewById(R.id.fab);
+
         recyclerView = view.findViewById(R.id.recyclerview_recent);
         tvFirstInfo = view.findViewById(R.id.tv_first_info);
         fab.setOnClickListener(this);
+
 
         // Read contacts
         readContacts();
@@ -88,6 +103,7 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
 
         return view;
     }
+
 
 
     @Override

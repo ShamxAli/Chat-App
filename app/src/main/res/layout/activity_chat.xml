@@ -116,7 +116,10 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="12dp"
         android:orientation="horizontal">
-
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
         <EditText
             android:id="@+id/text_send"
             android:layout_width="match_parent"
@@ -128,7 +131,14 @@
             android:background="@drawable/round_edittext"
             android:hint="Type a message..."
             android:padding="12dp" />
-
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:id="@+id/selectimg"
+                android:paddingRight="15dp"
+                android:src="@drawable/camera"/>
+        </FrameLayout>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

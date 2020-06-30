@@ -7,14 +7,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentResolver;
+import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -24,12 +29,18 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.startup.chatapp.R;
 import com.startup.chatapp.adapters.MessageAdapter;
 import com.startup.chatapp.model.Person;
@@ -45,6 +56,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static com.startup.chatapp.image_account.InfoActivity.REQUEST_CODE;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -64,6 +77,9 @@ public class ChatActivity extends AppCompatActivity {
     // to store...
     private String msgUid;
     String user2_uid;
+    private DatabaseReference mRef;
+    ImageView imageView2;
+    private StorageReference mStorageRef;
     String push;
     String user1_uid;
     String title, token;
@@ -116,6 +132,38 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    private void chooseImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+
+    Uri uri;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+
+            uri = data.getData();
+
+            if (uri != null) {
+                Intent intent=new Intent(getApplicationContext(),ImageSend.class);
+                intent.putExtra("img",uri.toString());
+                intent.putExtra("msgUid",msgUid);
+                startActivity(intent);
+            }
+
+
+        }
+
+    }
+
+
+
+
 
     // onCreate...
     @Override
@@ -131,10 +179,18 @@ public class ChatActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
         // if coming from Contacts activity
         user1_uid = FirebaseAuth.getInstance().getUid();
         comingFrom = getIntent().getStringExtra("key");
+        imageView2=findViewById(R.id.selectimg);
+
+        imageView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage();
+            }
+        });
+
         if (comingFrom.equals("ContactActivity")) {
             msgUid = getIntent().getStringExtra("msgUid");
             user2_uid = getIntent().getStringExtra("user2_uid");
@@ -261,7 +317,6 @@ public class ChatActivity extends AppCompatActivity {
         backView = findViewById(R.id.back_press_img);
         textView = findViewById(R.id.ca_user_name);
         imageView = findViewById(R.id.ca_profile_image);
-
     }
 
 

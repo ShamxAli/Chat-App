@@ -5,7 +5,15 @@ public class MessageModelClass {
     private String msgId;
     private String uid;
     private long timestamp;
+    private int type=0;
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     /*Constructors*/
     public MessageModelClass(String msg, String msgId, String uid, long timestamp) {
@@ -15,13 +23,14 @@ public class MessageModelClass {
         this.timestamp = timestamp;
     }
 
-    public MessageModelClass() {
+    /*Constructors*/
+    public MessageModelClass(String msg, String uid, long timestamp) {
+        this.msg = msg;
+        this.uid = uid;
+        this.timestamp = timestamp;
     }
 
-    public MessageModelClass(String msg, String msgId, long timestamp) {
-        this.msg = msg;
-        this.msgId = msgId;
-        this.timestamp = timestamp;
+    public MessageModelClass() {
     }
 
 
