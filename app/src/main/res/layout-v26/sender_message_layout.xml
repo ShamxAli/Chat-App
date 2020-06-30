@@ -4,9 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:paddingVertical="10dp"
     android:paddingStart="60dp"
-    android:paddingEnd="15dp">
+    android:paddingTop="10dp"
+    android:paddingEnd="15dp"
+    android:paddingBottom="5dp">
 
 
     <TextView
@@ -27,9 +28,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/showmsg"
         android:layout_alignEnd="@id/showmsg"
-        android:layout_marginBottom="-5dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="6dp"
+        android:layout_marginBottom="-5dp"
         android:text="abc"
+        android:textColor="@color/white"
         android:textSize="11sp"
         tools:ignore="SmallSp" />
 
