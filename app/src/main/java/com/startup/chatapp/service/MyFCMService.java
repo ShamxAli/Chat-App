@@ -39,19 +39,17 @@ public class MyFCMService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel();
         }
+
         /* --- Logic for receiving notification in different scenarios*/
-        // inside the chat activity
 
         // if user is in the chat activity
         if (ChatActivity.flag) {
-            if (remoteMessage.getData().get("number").equals(ChatActivity.user2_number)) {
+            if (remoteMessage.getData().get("number").equals(ChatActivity.user1_number)) {
 
             } else {
-                Log.d(TAG, "onMessageReceived: asdfasdfasdf");
                 displayNotification(getApplicationContext(), remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
             }
         }
-
         // if user is outside the chat activity
         else {
             displayNotification(getApplicationContext(), remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());

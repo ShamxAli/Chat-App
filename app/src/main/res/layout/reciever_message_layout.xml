@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:paddingVertical="10dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="1dp"
     android:paddingStart="15dp"
     android:paddingEnd="60dp">
 
@@ -26,6 +27,7 @@
         android:layout_alignStart="@id/showmsg"
         android:layout_marginStart="6dp"
         android:text="abc"
+        android:textColor="@color/white"
         android:textSize="11sp"
         tools:ignore="SmallSp" />
 </RelativeLayout>
