@@ -47,7 +47,7 @@
         android:id="@+id/uploadCImage"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:src="@drawable/camera"
+        android:src="@drawable/white_cam"
         app:civ_border_color="#FF000000"
         app:layout_constraintBottom_toBottomOf="@+id/prof"
         app:layout_constraintEnd_toEndOf="@+id/prof"
