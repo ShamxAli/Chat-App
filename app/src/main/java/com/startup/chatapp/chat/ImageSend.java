@@ -22,6 +22,8 @@ import com.google.firebase.storage.UploadTask;
 import com.startup.chatapp.R;
 import com.startup.chatapp.model.MessageModelClass;
 
+import org.json.JSONException;
+
 public class ImageSend extends AppCompatActivity {
 
     MessageModelClass messageModelClass;
@@ -30,21 +32,24 @@ public class ImageSend extends AppCompatActivity {
     String uri;
     Button button;
     String msgUid;
+    ChatActivity chatActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_send);
 
-        button=findViewById(R.id.imagesendbtn);
+        button = findViewById(R.id.imagesendbtn);
 
-        imageView=findViewById(R.id.imagesend);
+        imageView = findViewById(R.id.imagesend);
+
+        chatActivity = new ChatActivity();
 
         mStorageRef = FirebaseStorage.getInstance().getReference("u_image");
-        uri=getIntent().getStringExtra("img");
+        uri = getIntent().getStringExtra("img");
 
         imageView.setImageURI(Uri.parse(uri));
-        msgUid=getIntent().getStringExtra("msgUid");
+        msgUid = getIntent().getStringExtra("msgUid");
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,9 +59,6 @@ public class ImageSend extends AppCompatActivity {
         });
 
     }
-
-
-
 
 
     private String getFileExtension(Uri uri) {
@@ -69,7 +71,7 @@ public class ImageSend extends AppCompatActivity {
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
-    public void imageUpload(){
+    public void imageUpload() {
 
         new Thread(new Runnable() {
             @Override
@@ -90,10 +92,15 @@ public class ImageSend extends AppCompatActivity {
                         Uri downloadUrl = urlTask.getResult();
                         String push = FirebaseDatabase.getInstance().getReference().push().getKey();
 
-                        messageModelClass=new MessageModelClass(downloadUrl.toString(),push ,FirebaseAuth.getInstance().getUid(),System.currentTimeMillis()/1000);
+                        messageModelClass = new MessageModelClass(downloadUrl.toString(), push, FirebaseAuth.getInstance().getUid(), System.currentTimeMillis() / 1000);
                         messageModelClass.setType(1);
                         FirebaseDatabase.getInstance().getReference().child("ChatSystem").child(msgUid).child(push).setValue(messageModelClass);
-
+                        chatActivity.makeRecentChats("Photo");
+                        try {
+                            chatActivity.sendNotifications(ChatActivity.user1_number, chatActivity.getTitl(), chatActivity.getToken());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 

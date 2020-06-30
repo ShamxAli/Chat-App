@@ -1,7 +1,9 @@
 package com.startup.chatapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
@@ -21,10 +23,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.TransitionManager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.auth.FirebaseAuth;
 import com.startup.chatapp.R;
+import com.startup.chatapp.ZoomedImage;
 import com.startup.chatapp.model.MessageModelClass;
 
 
@@ -33,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
@@ -42,8 +48,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private List<MessageModelClass> msgList;
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
-    private static final int VIEW_IMG_SEND=3;
-    private static final int VIEW_IMG_REC=4;
+    private static final int VIEW_IMG_SEND = 3;
+    private static final int VIEW_IMG_REC = 4;
     private String uid;
 
     public MessageAdapter(Context context, List<MessageModelClass> msgList) {
@@ -58,16 +64,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         if (message.getUid().equals(uid)) {
             // If the current user is the sender of the message
-            if(message.getType()==1){
+            if (message.getType() == 1) {
                 return VIEW_IMG_SEND;
-            }else {
+            } else {
                 return VIEW_TYPE_MESSAGE_SENT;
             }
         } else {
             // If some other user sent the message
-            if(message.getType()==1){
+            if (message.getType() == 1) {
                 return VIEW_IMG_REC;
-            }else {
+            } else {
                 return VIEW_TYPE_MESSAGE_RECEIVED;
             }
         }
@@ -87,11 +93,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.reciever_message_layout, parent, false);
             return new MessageViewHolder(view);
-        }else if(viewType== VIEW_IMG_REC){
+        } else if (viewType == VIEW_IMG_REC) {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.reciever_image_layout, parent, false);
             return new MessageViewHolder(view);
-        }else if(viewType==VIEW_IMG_SEND){
+        } else if (viewType == VIEW_IMG_SEND) {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.sender_image_layout, parent, false);
             return new MessageViewHolder(view);
@@ -101,8 +107,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder holder, int position) {
-        MessageModelClass messageModelClass = msgList.get(position);
-        if(messageModelClass.getType()==0) {
+        final MessageModelClass messageModelClass = msgList.get(position);
+        if (messageModelClass.getType() == 0) {
             Calendar cal = Calendar.getInstance(Locale.ENGLISH);
             cal.setTimeInMillis(messageModelClass.getTimestamp() * 1000L);
 //        String date = DateFormat.format("dd-MM-yyyy hh:mm:ss aa", cal).toString();
@@ -110,29 +116,31 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
             holder.msg.setText(messageModelClass.getMsg());
             holder.time.setText(date);
-        }else if(messageModelClass.getType()==1){
+        } else if (messageModelClass.getType() == 1) {
+            Log.d("img", "onBindViewHolder: " + messageModelClass.getMsg());
             Calendar cal = Calendar.getInstance(Locale.ENGLISH);
             cal.setTimeInMillis(messageModelClass.getTimestamp() * 1000L);
 //        String date = DateFormat.format("dd-MM-yyyy hh:mm:ss aa", cal).toString();
-            String date = DateFormat.format("hh:mm aa", cal).toString();
-            Glide.with(context)
-                    .asBitmap()
-                    .load(messageModelClass.getMsg())
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            Bitmap resized = ThumbnailUtils.extractThumbnail(resource, 250, 250);
-                            Log.d("imagesize", "onResourceReady: "+resized.getByteCount());
-                            holder.imageView.setImageBitmap(resized);
-                        }
-                    });
+            final String date = DateFormat.format("hh:mm aa", cal).toString();
+
+            Glide.with(context).load(messageModelClass.getMsg()).into(holder.imageView);
+//            Glide.with(context).load(messageModelClass.getMsg()).into(holder.imageView);
+
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(context, ZoomedImage.class);
+                    intent.putExtra("imgs", messageModelClass.getMsg());
+                    context.startActivity(intent);
+
+                }
+
+            });
             holder.time.setText(date);
+
         }
-
-
-
     }
-
 
 
     @Override
@@ -145,13 +153,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         TextView time, msg;
         ImageView imageView;
 
-        public MessageViewHolder(@NonNull View itemView) {
+        public MessageViewHolder(@NonNull final View itemView) {
             super(itemView);
             msg = itemView.findViewById(R.id.showmsg);
             time = itemView.findViewById(R.id.datetime);
-            imageView= itemView.findViewById(R.id.image);
+            imageView = itemView.findViewById(R.id.image);
         }
-    }
 
+
+    }
 
 }

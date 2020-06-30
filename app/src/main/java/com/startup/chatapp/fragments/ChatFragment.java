@@ -270,7 +270,6 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
                 LinkedHashSet<RecentChatsModel> hashSet = new LinkedHashSet<>(recentChatsArrayList);
                 recentChatsArrayList.clear();
                 recentChatsArrayList = new ArrayList<>(hashSet);
-                Log.d("TAGTAG", "onActivityCreated: " + recentChatsArrayList.get(0).getImg_url());
                 bakeRecyclerView(recentChatsArrayList);
 
             }

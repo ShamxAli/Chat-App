@@ -82,7 +82,26 @@ public class ChatActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     String push;
     String user1_uid;
-    String title, token;
+    String title;
+
+
+    public String getTitl() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    String token;
     String user2_name;
 
     String user1_pushid, user2_pushid;
