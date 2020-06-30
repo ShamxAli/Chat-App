@@ -15,14 +15,13 @@
         android:id="@+id/imagesendbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="btnSendImage"
+        android:layout_gravity="end|bottom"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:layout_gravity="end|bottom"
         android:background="@drawable/ic_right_arrow"
         android:backgroundTint="@color/colorAccent"
+        android:onClick="btnSendImage"
         android:padding="10dp" />
-
 
 
 </FrameLayout>

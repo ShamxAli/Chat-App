@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -60,6 +61,7 @@ import java.util.Objects;
 import static com.startup.chatapp.image_account.InfoActivity.REQUEST_CODE;
 
 public class ChatActivity extends AppCompatActivity {
+
 
     // Widgets
     EditText text;
@@ -127,6 +129,7 @@ public class ChatActivity extends AppCompatActivity {
         checkIfRecentChatAlreadyExist();
         getUserToken(); // get user token for notifications ...
         flag = true; // flag for notifications ...
+        ImageSend.setContext(this);
     }
 
     @Override
@@ -160,6 +163,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
     Uri uri;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -169,20 +173,13 @@ public class ChatActivity extends AppCompatActivity {
             uri = data.getData();
 
             if (uri != null) {
-                Intent intent=new Intent(getApplicationContext(),ImageSend.class);
-                intent.putExtra("img",uri.toString());
-                intent.putExtra("msgUid",msgUid);
+                Intent intent = new Intent(getApplicationContext(), ImageSend.class);
+                intent.putExtra("img", uri.toString());
+                intent.putExtra("msgUid", msgUid);
                 startActivity(intent);
             }
-
-
         }
-
     }
-
-
-
-
 
     // onCreate...
     @Override
@@ -201,7 +198,7 @@ public class ChatActivity extends AppCompatActivity {
         // if coming from Contacts activity
         user1_uid = FirebaseAuth.getInstance().getUid();
         comingFrom = getIntent().getStringExtra("key");
-        imageView2=findViewById(R.id.selectimg);
+        imageView2 = findViewById(R.id.selectimg);
 
         imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -380,7 +377,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-
 
     // TODO ...
     public void makeRecentChats(String msgtext) {

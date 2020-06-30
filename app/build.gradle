@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    defaultConfig {
+        vectorDrawables.useSupportLibrary = true
+    }
 }
 
 dependencies {
@@ -47,14 +50,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.3.1'
 
     // FireBase Core
-    implementation 'com.google.firebase:firebase-core:17.4.0'
+    implementation 'com.google.firebase:firebase-core:17.4.3'
 
     // FireBase Database
-    implementation 'com.google.firebase:firebase-database:19.3.0'
+    implementation 'com.google.firebase:firebase-database:19.3.1'
 
     // FireBase Analytics
-    implementation 'com.google.firebase:firebase-analytics:17.4.0'
-
+    implementation 'com.google.firebase:firebase-analytics:17.4.3'
 
     // FireBase Storage
     implementation 'com.google.firebase:firebase-storage:19.1.1'
@@ -69,10 +71,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     // Material Design
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'com.google.firebase:firebase-messaging:20.2.0'
+    implementation 'com.google.firebase:firebase-messaging:20.2.1'
     // Volley
     implementation 'com.android.volley:volley:1.1.1'
-
-
 }
 apply plugin: 'com.google.gms.google-services'

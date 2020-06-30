@@ -73,6 +73,7 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
     ValueEventListener mListener;
 
 
+
     public ChatFragment() {
 
     }
@@ -103,7 +104,6 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
 
         return view;
     }
-
 
 
     @Override

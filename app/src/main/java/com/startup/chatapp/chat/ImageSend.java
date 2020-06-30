@@ -3,6 +3,7 @@ package com.startup.chatapp.chat;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -25,39 +26,37 @@ import com.startup.chatapp.model.MessageModelClass;
 import org.json.JSONException;
 
 public class ImageSend extends AppCompatActivity {
-
     MessageModelClass messageModelClass;
     ImageView imageView;
     private StorageReference mStorageRef;
     String uri;
-    Button button;
+
     String msgUid;
-    ChatActivity chatActivity;
+    static ChatActivity contex;
+
+
+    public static void setContext(Context context) {
+        contex = (ChatActivity) context;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_send);
 
-        button = findViewById(R.id.imagesendbtn);
-
         imageView = findViewById(R.id.imagesend);
 
-        chatActivity = new ChatActivity();
 
         mStorageRef = FirebaseStorage.getInstance().getReference("u_image");
         uri = getIntent().getStringExtra("img");
 
         imageView.setImageURI(Uri.parse(uri));
         msgUid = getIntent().getStringExtra("msgUid");
+    }
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageUpload();
-            }
-        });
 
+    public void btnSendImage(View view) {
+        imageUpload();
     }
 
 
@@ -95,9 +94,9 @@ public class ImageSend extends AppCompatActivity {
                         messageModelClass = new MessageModelClass(downloadUrl.toString(), push, FirebaseAuth.getInstance().getUid(), System.currentTimeMillis() / 1000);
                         messageModelClass.setType(1);
                         FirebaseDatabase.getInstance().getReference().child("ChatSystem").child(msgUid).child(push).setValue(messageModelClass);
-                        chatActivity.makeRecentChats("Photo");
+                        contex.makeRecentChats("Photo");
                         try {
-                            chatActivity.sendNotifications(ChatActivity.user1_number, chatActivity.getTitl(), chatActivity.getToken());
+                            contex.sendNotifications(ChatActivity.user1_number, contex.getTitl(), contex.getToken());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -108,4 +107,6 @@ public class ImageSend extends AppCompatActivity {
         }).start();
         finish();
     }
+
+
 }
