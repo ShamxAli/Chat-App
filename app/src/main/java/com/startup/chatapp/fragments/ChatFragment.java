@@ -80,10 +80,10 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
 
 
         // Offline capability...
-        FirebaseDatabase.getInstance().getReference("RecentChatsModel").
-                child(FirebaseAuth.getInstance().
-                        getCurrentUser().getUid())
-                .keepSynced(true);
+//        FirebaseDatabase.getInstance().getReference("RecentChatsModel").
+//                child(FirebaseAuth.getInstance().
+//                        getCurrentUser().getUid())
+//                .keepSynced(true);
 
 
         return view;
@@ -102,7 +102,9 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
         FirebaseDatabase.getInstance().getReference("RecentChatsModel").
                 child(FirebaseAuth.getInstance().
                         getCurrentUser().getUid()).addValueEventListener(mListener);
+
     }
+
 
     @Override
     public void onDestroy() {
@@ -118,7 +120,7 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
         mListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("TAGTAG", "onDataChange: added called");
+                Log.d("fuck", "fuck 000");
                 // Clearing the list..
                 recentChatsArrayList.clear();
                 recyclerView.setVisibility(View.VISIBLE);
@@ -137,7 +139,6 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
                             tvFirstInfo.setVisibility(View.INVISIBLE);
                         }
                     }
-                 //   recentAdapter.notifyDataSetChanged();
                 }
                 getImgUrl();
             }
@@ -164,7 +165,7 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
 
     // bake recyclerView
     private void bakeRecyclerView(ArrayList<RecentChatsModel> recentChatsModels) {
-        context=getActivity();
+        context = getActivity();
         recentAdapter = new RecentAdapter(context, recentChatsModels, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recentAdapter);
@@ -229,9 +230,10 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
     // *****
     public void getImgUrl() {
         uploadList.clear();
-        FirebaseDatabase.getInstance().getReference().child("uploads").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("uploads").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("fuckkkk", "onDataChange: fuck");
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Upload upload = child.getValue(Upload.class);
                     upload.setUid(child.getKey());
@@ -240,19 +242,19 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
 
                 Log.d("TAGLOL", "onDataChange: kndknk");
                 for (int i = 0; i < uploadList.size(); i++) {
-                    Log.d("TAGLOL", "onDataChange: "+uploadList.get(i).getUid());
-                    for (int j=0;j<recentChatsArrayList.size();j++) {
+                    Log.d("TAGLOL", "onDataChange: " + uploadList.get(i).getUid());
+                    for (int j = 0; j < recentChatsArrayList.size(); j++) {
 
                         if (recentChatsArrayList.get(j).getUser2_uid().equals(uploadList.get(i).getUid())) {
                             recentChatsArrayList.get(j).setImg_url(uploadList.get(i).getUrl());
-                            Log.d("TAGLOL", "onDataChange: "+recentChatsArrayList.get(j).getName()+recentChatsArrayList.get(j).getImg_url());
+                            Log.d("TAGLOL", "onDataChange: " + recentChatsArrayList.get(j).getName() + recentChatsArrayList.get(j).getImg_url());
                         }
                     }
                 }
                 LinkedHashSet<RecentChatsModel> hashSet = new LinkedHashSet<>(recentChatsArrayList);
                 recentChatsArrayList.clear();
                 recentChatsArrayList = new ArrayList<>(hashSet);
-                Log.d("TAGTAG", "onActivityCreated: "+recentChatsArrayList.get(0).getImg_url());
+                Log.d("TAGTAG", "onActivityCreated: " + recentChatsArrayList.get(0).getImg_url());
                 bakeRecyclerView(recentChatsArrayList);
 
             }
@@ -264,6 +266,7 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
         });
     }
 
+    boolean f = true;
     /*Permissions ============================*/
 
     @RequiresApi(api = Build.VERSION_CODES.M)

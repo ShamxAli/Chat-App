@@ -8,8 +8,22 @@ public class ContactsModel {
     private String contactName;
     private String contactNumber;
     private String uid;
+    String url;
 
+    public ContactsModel(String contactName, String contactNumber, String uid, String url) {
+        this.contactName = contactName;
+        this.contactNumber = contactNumber;
+        this.uid = uid;
+        this.url = url;
+    }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     /*Constructor*/
    public ContactsModel(String name, String number, String uid) {

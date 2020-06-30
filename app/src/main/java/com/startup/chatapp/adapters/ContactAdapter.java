@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.startup.chatapp.R;
 import com.startup.chatapp.model.ContactsModel;
 
@@ -46,6 +47,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
         holder.tv_name.setText(contactsModel.getContactName());
         holder.tv_num.setText(contactsModel.getContactNumber());
 
+        Glide.with(context).load(contactsModel.getUrl()).into(holder.imageView);
 
 
     }
