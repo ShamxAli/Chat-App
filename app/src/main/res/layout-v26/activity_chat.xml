@@ -144,7 +144,7 @@
                 android:layout_gravity="right"
                 android:id="@+id/selectimg"
                 android:paddingRight="15dp"
-                android:src="@drawable/grey_cam"/>
+                app:srcCompat="@drawable/grey_cam"/>
         </FrameLayout>
         <ImageView
             android:layout_width="wrap_content"

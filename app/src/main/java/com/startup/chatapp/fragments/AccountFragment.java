@@ -30,6 +30,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.startup.chatapp.R;
+import com.startup.chatapp.image_account.BottomSheetEdit;
 import com.startup.chatapp.model.Upload;
 
 import static android.app.Activity.RESULT_OK;
@@ -45,7 +46,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     private ValueEventListener mListener;
     private StorageReference mStorageRef;
     private Upload upload;
-
+    ImageView ename,ephone,estatus;
 
     public AccountFragment() {
     }
@@ -58,12 +59,19 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         final View view = inflater.inflate(R.layout.fragment_account, container, false);
 
 
+        ename=view.findViewById(R.id.editCListenerName);
+        ephone=view.findViewById(R.id.editCListenerPhone);
+        estatus=view.findViewById(R.id.editCListenerStatus);
         imageView = view.findViewById(R.id.account_img);
         name = view.findViewById(R.id.account_name);
         number = view.findViewById(R.id.account_number);
         imageView.setOnClickListener(this);
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
 
+
+        ename.setOnClickListener(this);
+        ephone.setOnClickListener(this);
+        estatus.setOnClickListener(this);
 
         mRef = FirebaseDatabase.getInstance().getReference("uploads").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -95,8 +103,46 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     // Update image....
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.account_img) {
-            chooseImage();
+        switch (v.getId()){
+            case R.id.account_img:
+                chooseImage();
+                break;
+            case R.id.editCListenerName:
+                generateDialog(1);
+                break;
+            case R.id.editCListenerPhone:
+                generateDialog(3);
+                break;
+            case R.id.editCListenerStatus:
+                generateDialog(2);
+                break;
+        }
+    }
+    private void generateDialog(int i){
+
+        if(i==1){
+            Bundle bundle = new Bundle();
+            String myMessage = "1";
+            bundle.putString("message", myMessage );
+            BottomSheetEdit bottomSheetFragment=new BottomSheetEdit();
+            bottomSheetFragment.setArguments(bundle);
+            bottomSheetFragment.show(getChildFragmentManager(),"namefrag");
+        }else if(i==2){
+            Bundle bundle = new Bundle();
+            String myMessage = "2";
+            bundle.putString("message", myMessage );
+            BottomSheetEdit bottomSheetFragment=new BottomSheetEdit();
+            bottomSheetFragment.setArguments(bundle);
+            bottomSheetFragment.show(getChildFragmentManager(),"statusfrag");
+        }else if(i==3){
+            Bundle bundle = new Bundle();
+            String myMessage = "3";
+            bundle.putString("message", myMessage );
+            BottomSheetEdit bottomSheetFragment=new BottomSheetEdit();
+            bottomSheetFragment.setArguments(bundle);
+            bottomSheetFragment.show(getChildFragmentManager(),"phonefrag");
+        }else{
+            Toast.makeText(getContext(),"Error",Toast.LENGTH_LONG).show();
         }
     }
 
