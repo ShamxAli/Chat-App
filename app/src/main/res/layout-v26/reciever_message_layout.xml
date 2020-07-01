@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:paddingTop="10dp"
-    android:paddingBottom="1dp"
     android:paddingLeft="15dp"
-    android:paddingRight="60dp">
+    android:paddingTop="10dp"
+    android:paddingRight="60dp"
+    android:paddingBottom="1dp">
 
     <TextView
         android:id="@+id/showmsg"
@@ -16,6 +16,7 @@
         android:background="@drawable/msg_receive_corners"
         android:elevation="2dp"
         android:padding="9dp"
+        android:textColor="@android:color/black"
         android:text="How are you doing? This is a long message that should probably wrap."
         android:textSize="17sp" />
 
@@ -25,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/showmsg"
         android:layout_alignStart="@id/showmsg"
-        android:layout_marginStart="6dp"
+        android:layout_marginStart="2dp"
         android:text="abc"
         android:textColor="@color/white"
         android:textSize="11sp"

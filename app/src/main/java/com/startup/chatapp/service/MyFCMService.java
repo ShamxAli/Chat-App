@@ -44,7 +44,7 @@ public class MyFCMService extends FirebaseMessagingService {
 
         // if user is in the chat activity
         if (ChatActivity.flag) {
-            if (remoteMessage.getData().get("number").equals(ChatActivity.user1_number)) {
+            if (remoteMessage.getData().get("number").equals(ChatActivity.user2_number)) {
 
             } else {
                 displayNotification(getApplicationContext(), remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());

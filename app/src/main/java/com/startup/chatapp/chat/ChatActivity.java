@@ -139,7 +139,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void getUserToken() {
-        FirebaseDatabase.getInstance().getReference("Users").child(user1_uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("Users").child(user2_uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Person value = dataSnapshot.getValue(Person.class);

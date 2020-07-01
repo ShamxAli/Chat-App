@@ -29,7 +29,7 @@
         android:layout_below="@id/showmsg"
         android:layout_marginBottom="-5dp"
         android:layout_alignEnd="@id/showmsg"
-        android:layout_marginEnd="6dp"
+        android:layout_marginEnd="2dp"
         android:text="abc"
         android:textSize="11sp"
         android:textColor="@color/white"

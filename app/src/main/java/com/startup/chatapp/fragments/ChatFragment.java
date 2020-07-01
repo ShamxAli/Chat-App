@@ -73,7 +73,6 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
     ValueEventListener mListener;
 
 
-
     public ChatFragment() {
 
     }
@@ -96,10 +95,10 @@ public class ChatFragment extends Fragment implements RecentAdapter.OnItemClick,
 
 
         // Offline capability...
-//        FirebaseDatabase.getInstance().getReference("RecentChatsModel").
-//                child(FirebaseAuth.getInstance().
-//                        getCurrentUser().getUid())
-//                .keepSynced(true);
+        FirebaseDatabase.getInstance().getReference("RecentChatsModel").
+                child(FirebaseAuth.getInstance().
+                        getCurrentUser().getUid())
+                .keepSynced(true);
 
 
         return view;

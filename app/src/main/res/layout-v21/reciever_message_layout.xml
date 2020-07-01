@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/showmsg"
         android:layout_alignStart="@id/showmsg"
-        android:layout_marginStart="6dp"
+        android:layout_marginStart="2dp"
         android:text="abc"
         android:textSize="11sp"
         android:textColor="@color/white"
