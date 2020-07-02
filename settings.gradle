@@ -1,2 +1,3 @@
+include ':aiisss'
 include ':app'
 rootProject.name='ContentProvidersApp'
